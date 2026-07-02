@@ -1,0 +1,178 @@
+{
+  "created_at_utc": "2026-06-30T23:36:45.557925+00:00",
+  "source": "SEC EDGAR company submissions and filing archives",
+  "raw_filings_dir": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\data\\raw\\10k",
+  "filing_count": 20,
+  "companies": [
+    {
+      "name": "Apple Inc.",
+      "ticker": "AAPL",
+      "cik": 320193,
+      "aliases": [
+        "apple"
+      ]
+    },
+    {
+      "name": "Microsoft Corporation",
+      "ticker": "MSFT",
+      "cik": 789019,
+      "aliases": [
+        "microsoft",
+        "mircosoft"
+      ]
+    },
+    {
+      "name": "Amazon.com, Inc.",
+      "ticker": "AMZN",
+      "cik": 1018724,
+      "aliases": [
+        "amazon"
+      ]
+    },
+    {
+      "name": "Meta Platforms, Inc.",
+      "ticker": "META",
+      "cik": 1326801,
+      "aliases": [
+        "meta",
+        "facebook"
+      ]
+    },
+    {
+      "name": "NVIDIA Corporation",
+      "ticker": "NVDA",
+      "cik": 1045810,
+      "aliases": [
+        "nvidia"
+      ]
+    },
+    {
+      "name": "JPMorgan Chase & Co.",
+      "ticker": "JPM",
+      "cik": 19617,
+      "aliases": [
+        "jp morgan",
+        "jpmorgan",
+        "jp morgan chase"
+      ]
+    },
+    {
+      "name": "Bank of America Corporation",
+      "ticker": "BAC",
+      "cik": 70858,
+      "aliases": [
+        "bank of america",
+        "bofa"
+      ]
+    },
+    {
+      "name": "BlackRock, Inc.",
+      "ticker": "BLK",
+      "cik": 1364742,
+      "aliases": [
+        "blackrock"
+      ]
+    },
+    {
+      "name": "The Goldman Sachs Group, Inc.",
+      "ticker": "GS",
+      "cik": 886982,
+      "aliases": [
+        "goldman sachs"
+      ]
+    },
+    {
+      "name": "State Street Corporation",
+      "ticker": "STT",
+      "cik": 93751,
+      "aliases": [
+        "state street"
+      ]
+    },
+    {
+      "name": "Broadcom Inc.",
+      "ticker": "AVGO",
+      "cik": 1730168,
+      "aliases": [
+        "broadcom"
+      ]
+    },
+    {
+      "name": "Berkshire Hathaway Inc.",
+      "ticker": "BRK-B",
+      "cik": 1067983,
+      "aliases": [
+        "berkshire hathaway",
+        "berkshire"
+      ]
+    },
+    {
+      "name": "Eli Lilly and Company",
+      "ticker": "LLY",
+      "cik": 59478,
+      "aliases": [
+        "eli lilly",
+        "eli lily",
+        "lilly"
+      ]
+    },
+    {
+      "name": "Walmart Inc.",
+      "ticker": "WMT",
+      "cik": 104169,
+      "aliases": [
+        "walmart",
+        "wal-mart"
+      ]
+    },
+    {
+      "name": "Morgan Stanley",
+      "ticker": "MS",
+      "cik": 895421,
+      "aliases": [
+        "morgan stanley"
+      ]
+    },
+    {
+      "name": "Blackstone Inc.",
+      "ticker": "BX",
+      "cik": 1393818,
+      "aliases": [
+        "blackstone"
+      ]
+    },
+    {
+      "name": "General Motors Company",
+      "ticker": "GM",
+      "cik": 1467858,
+      "aliases": [
+        "general motors"
+      ]
+    },
+    {
+      "name": "Ford Motor Company",
+      "ticker": "F",
+      "cik": 37996,
+      "aliases": [
+        "ford"
+      ]
+    },
+    {
+      "name": "Wells Fargo & Company",
+      "ticker": "WFC",
+      "cik": 72971,
+      "aliases": [
+        "wells fargo"
+      ]
+    },
+    {
+      "name": "Hilton Worldwide Holdings Inc.",
+      "ticker": "HLT",
+      "cik": 1585689,
+      "aliases": [
+        "hilton worldwide",
+        "hilton"
+      ]
+    }
+  ]
+}
