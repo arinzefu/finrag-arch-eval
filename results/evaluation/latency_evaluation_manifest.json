@@ -1,0 +1,34 @@
+{
+  "title": "Stage 18: Canonical-run latency",
+  "created_at_utc": "2026-09-28T20:04:02.117138+00:00",
+  "run_manifest": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_manifest.json",
+  "run_manifest_sha256": "8fdfb063e37d70d5cddbfdb4986a240e4f0390032eb6abab9d7bab1c39d4cd25",
+  "inputs": {
+    "P0": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_P0.jsonl",
+      "sha256": "35e69e5d0d5bb039c3ee91fa36eab874ab5799d8aad68a2a6b0d34ed255c9942"
+    },
+    "P1": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_P1.jsonl",
+      "sha256": "fb15c3d6321f9fb3f534e23fee1a94f68ca36e4fd3802f054d87f8405610e676"
+    },
+    "P2": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_P2.jsonl",
+      "sha256": "b117ba61634367f2e13b12043c8b5412c1250925829a1818c72c1f19c34be3b7"
+    },
+    "P3": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_P3.jsonl",
+      "sha256": "bc37c4f40483786196c9f2b5c802eabbabad594f7ff9d2555ac72bfda85341e2"
+    }
+  },
+  "parameters": {
+    "unit": "milliseconds",
+    "std": "sample standard deviation (ddof=1)",
+    "scope": "per_question_excludes_pipeline_and_model_initialization",
+    "unavailable": "dense/BM25/fusion component timings were not recorded; no inferred values"
+  },
+  "outputs": {
+    "per_question": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\latency_metrics.csv",
+    "summary": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\aggregated\\latency_summary.csv"
+  }
+}

@@ -1,0 +1,20 @@
+experiment:
+  protocol: controlled_architecture_comparison_v1
+
+retrieval:
+  final_context_k: 5
+  query_filter_policy: question_only_company_and_unambiguous_year
+  query_expansion_policy: deterministic_financial_query_v2
+
+generation:
+  context_policy: canonical_chunk_text
+  prompt_policy: shared_rag_prompt_for_p1_p3
+
+hybrid:
+  rrf_k: 60
+
+reranking:
+  max_length: 512
+  window_overlap: 64
+  batch_size: 32
+  query_policy: same_processed_query_as_first_stage

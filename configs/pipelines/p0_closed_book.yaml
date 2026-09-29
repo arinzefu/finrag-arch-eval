@@ -1,0 +1,9 @@
+pipeline:
+  id: P0
+  name: closed_book
+
+retrieval:
+  enabled: false
+
+reranking:
+  enabled: false

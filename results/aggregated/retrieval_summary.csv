@@ -1,0 +1,4 @@
+table_title,run_id,architecture,question_count,no_result_count,hit_at_1,hit_at_3,hit_at_5,recall_at_5,mrr_at_5
+Table R1: Held-out page-level retrieval performance,financebench-heldout-v1,P1,145,2,0.1103448275862069,0.30344827586206896,0.4,0.3620689655172414,0.2208045977011494
+Table R1: Held-out page-level retrieval performance,financebench-heldout-v1,P2,145,2,0.09655172413793103,0.23448275862068965,0.31724137931034485,0.2896551724137931,0.17448275862068965
+Table R1: Held-out page-level retrieval performance,financebench-heldout-v1,P3,145,2,0.21379310344827587,0.35172413793103446,0.4,0.3689655172413793,0.28379310344827585

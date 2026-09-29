@@ -1,0 +1,17 @@
+{
+  "title": "Stage 17: Preselected Faithfulness Judgment Audit Sample",
+  "run_id": "financebench-heldout-v1",
+  "selection_method": "Sort the 140 non-pilot question IDs by SHA256 of 'faithfulness-audit-v1:' + question_id; select the first 8. Selection uses IDs only, before per-question v4 judgments are inspected.",
+  "pilot_exclusion": "The first five ordered run-manifest IDs were used to debug the judge and are excluded from this audit sample.",
+  "sample_size": 8,
+  "question_ids": [
+    "financebench_id_10285",
+    "financebench_id_03849",
+    "financebench_id_04854",
+    "financebench_id_01935",
+    "financebench_id_10130",
+    "financebench_id_01009",
+    "financebench_id_00476",
+    "financebench_id_01912"
+  ]
+}

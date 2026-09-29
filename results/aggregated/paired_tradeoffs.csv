@@ -1,0 +1,20 @@
+table_title,run_id,architecture_a,architecture_b,metric,pair_count,excluded_pair_count,mean_a_paired,mean_b_paired,mean_difference_b_minus_a,percent_change_from_a
+Table T3: Adjacent-architecture paired trade-offs,financebench-heldout-v1,P0,P1,token_f1,145,0,0.17193511919540966,0.1586150655392083,-0.01332005365620137,
+Table T3: Adjacent-architecture paired trade-offs,financebench-heldout-v1,P0,P1,numeric_accuracy,112,33,0.05580357142857143,0.18154761904761904,0.12574404761904762,
+Table T3: Adjacent-architecture paired trade-offs,financebench-heldout-v1,P0,P1,gold_evidence_support,66,79,0.5421717171717172,0.6253848003848004,0.08321308321308318,
+Table T3: Adjacent-architecture paired trade-offs,financebench-heldout-v1,P0,P1,total_latency_ms,145,0,2073.9830206896995,1932.8805600000187,-141.1024606896808,-6.80345303129615
+Table T3: Adjacent-architecture paired trade-offs,financebench-heldout-v1,P0,P1,abstained,145,0,0.0,0.4,0.4,
+Table T3: Adjacent-architecture paired trade-offs,financebench-heldout-v1,P1,P2,token_f1,145,0,0.1586150655392083,0.16560406564560928,0.006989000106400994,
+Table T3: Adjacent-architecture paired trade-offs,financebench-heldout-v1,P1,P2,numeric_accuracy,112,33,0.18154761904761904,0.19047619047619047,0.008928571428571425,
+Table T3: Adjacent-architecture paired trade-offs,financebench-heldout-v1,P1,P2,gold_evidence_support,71,74,0.6449586407332886,0.6305164319248826,-0.014442208808405965,
+Table T3: Adjacent-architecture paired trade-offs,financebench-heldout-v1,P1,P2,context_faithfulness,73,72,0.8725918677973472,0.8305105853051058,-0.04208128249224141,
+Table T3: Adjacent-architecture paired trade-offs,financebench-heldout-v1,P1,P2,recall_at_5,145,0,0.3620689655172414,0.2896551724137931,-0.07241379310344825,
+Table T3: Adjacent-architecture paired trade-offs,financebench-heldout-v1,P1,P2,total_latency_ms,145,0,1932.8805600000187,2245.601484827634,312.72092482761536,16.179009262093896
+Table T3: Adjacent-architecture paired trade-offs,financebench-heldout-v1,P1,P2,abstained,145,0,0.4,0.43448275862068964,0.03448275862068961,
+Table T3: Adjacent-architecture paired trade-offs,financebench-heldout-v1,P2,P3,token_f1,145,0,0.16560406564560928,0.16952237818427582,0.003918312538666535,
+Table T3: Adjacent-architecture paired trade-offs,financebench-heldout-v1,P2,P3,numeric_accuracy,112,33,0.19047619047619047,0.17633928571428573,-0.01413690476190474,
+Table T3: Adjacent-architecture paired trade-offs,financebench-heldout-v1,P2,P3,gold_evidence_support,70,75,0.6264285714285714,0.6196825396825397,-0.006746031746031722,
+Table T3: Adjacent-architecture paired trade-offs,financebench-heldout-v1,P2,P3,context_faithfulness,71,74,0.8198676909944516,0.833232729711603,0.013365038717151445,
+Table T3: Adjacent-architecture paired trade-offs,financebench-heldout-v1,P2,P3,recall_at_5,145,0,0.2896551724137931,0.3689655172413793,0.0793103448275862,
+Table T3: Adjacent-architecture paired trade-offs,financebench-heldout-v1,P2,P3,total_latency_ms,145,0,2245.601484827634,5632.504335172341,3386.9028503447066,150.82386047694814
+Table T3: Adjacent-architecture paired trade-offs,financebench-heldout-v1,P2,P3,abstained,145,0,0.43448275862068964,0.4,-0.03448275862068961,

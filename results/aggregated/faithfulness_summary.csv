@@ -1,0 +1,5 @@
+table_title,run_id,architecture,question_count,abstention_count,context_applicable_count,context_faithfulness,context_hallucination,gold_applicable_count,gold_evidence_support,gold_evidence_hallucination,judge_model,judge_protocol,context_guard_override_count,gold_guard_override_count
+Table F1: Unit-level evidence support and hallucination,financebench-heldout-v1,P0,145,0,0,,,112,0.5828869047619047,0.41711309523809526,gpt-4o-mini,answer-unit-passage-v4,0,82
+Table F1: Unit-level evidence support and hallucination,financebench-heldout-v1,P1,145,58,85,0.8502707749766574,0.14972922502334263,83,0.6358481545228533,0.36415184547714674,gpt-4o-mini,answer-unit-passage-v4,38,62
+Table F1: Unit-level evidence support and hallucination,financebench-heldout-v1,P2,145,63,80,0.8203409090909091,0.17965909090909093,81,0.6209876543209876,0.37901234567901243,gpt-4o-mini,answer-unit-passage-v4,37,57
+Table F1: Unit-level evidence support and hallucination,financebench-heldout-v1,P3,145,58,86,0.832281284606866,0.167718715393134,85,0.6524836601307189,0.3475163398692811,gpt-4o-mini,answer-unit-passage-v4,35,54

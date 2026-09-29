@@ -1,0 +1,63 @@
+{
+  "title": "Stage 17: Unit-level evidence support",
+  "created_at_utc": "2026-09-28T21:50:47.832339+00:00",
+  "run_manifest": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_manifest.json",
+  "run_manifest_sha256": "8fdfb063e37d70d5cddbfdb4986a240e4f0390032eb6abab9d7bab1c39d4cd25",
+  "inputs": {
+    "gold_evidence": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\data\\processed\\evidence_mapping.json",
+      "sha256": "d8c3ee8155f047d865cc9e572a71ef949821e824c7b193e046b84b42e5eae15f"
+    },
+    "judgments": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\faithfulness_judgments_v4.jsonl",
+      "sha256": "e94e13f6d653a2602ae77bcde726ed7563303e810fe0487866246bebce718352"
+    },
+    "P0": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_P0.jsonl",
+      "sha256": "35e69e5d0d5bb039c3ee91fa36eab874ab5799d8aad68a2a6b0d34ed255c9942"
+    },
+    "P1": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_P1.jsonl",
+      "sha256": "fb15c3d6321f9fb3f534e23fee1a94f68ca36e4fd3802f054d87f8405610e676"
+    },
+    "P2": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_P2.jsonl",
+      "sha256": "b117ba61634367f2e13b12043c8b5412c1250925829a1818c72c1f19c34be3b7"
+    },
+    "P3": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_P3.jsonl",
+      "sha256": "bc37c4f40483786196c9f2b5c802eabbabad594f7ff9d2555ac72bfda85341e2"
+    }
+  },
+  "parameters": {
+    "judge_model": "gpt-4o-mini",
+    "judge_protocol": "answer-unit-passage-v4",
+    "prompt_and_schema_sha256": "3ff697c8ad470e0df26196b5d79ae5562d0c87a86d9be52a346a36d9677dc43c",
+    "response_format": "strict JSON schema via Responses text.format",
+    "judge_max_output_tokens": 2400,
+    "judge_temperature": null,
+    "invalid_response_policy": "retry identical request up to 3 times; log invalid responses separately",
+    "source_guards": [
+      "scored units are segmented deterministically from answer",
+      "cited passage IDs exist in the supplied reference",
+      "direct financial numbers occur in cited passages",
+      "arithmetic operands occur in cited passages",
+      "missing unit assessments and unscored financial units counted unsupported"
+    ],
+    "previous_pilots": [
+      "faithfulness_judgments.jsonl retained, not reused",
+      "faithfulness_invalid_responses_v2.jsonl retained, not reused",
+      "faithfulness_judgments_v3.jsonl retained, not reused"
+    ],
+    "unit_score": "supported factual answer units / all factual answer units; macro mean over applicable answers",
+    "hallucination": "1 - claim support; empty-claim answers NA",
+    "P0_context": "not applicable",
+    "gold_reference": "FinanceBench annotated evidence_text",
+    "context_reference": "actual final retrieved chunk text"
+  },
+  "outputs": {
+    "per_question": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\faithfulness_metrics.csv",
+    "summary": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\aggregated\\faithfulness_summary.csv",
+    "judgments": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\faithfulness_judgments_v4.jsonl"
+  }
+}

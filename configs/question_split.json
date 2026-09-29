@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "policy": "development_smoke_excluded_from_primary_evaluation",
+  "development_question_ids": [
+    "financebench_id_03029",
+    "financebench_id_04672",
+    "financebench_id_00499",
+    "financebench_id_01226",
+    "financebench_id_01865"
+  ]
+}

@@ -1,0 +1,15 @@
+table_title,run_id,objective,architecture,quality_mean,quality_scored_n,quality_coverage_rate,exact_abstention_rate,mean_total_latency_ms,pareto_nondominated,dominated_by
+Table T2: Unweighted quality-latency Pareto frontiers,financebench-heldout-v1,answer_token_f1,P0,0.17193511919540966,145,1.0,0.0,2073.9830206896995,1,
+Table T2: Unweighted quality-latency Pareto frontiers,financebench-heldout-v1,answer_token_f1,P1,0.1586150655392083,145,1.0,0.4,1932.8805600000187,1,
+Table T2: Unweighted quality-latency Pareto frontiers,financebench-heldout-v1,answer_token_f1,P2,0.16560406564560928,145,1.0,0.43448275862068964,2245.601484827634,0,P0
+Table T2: Unweighted quality-latency Pareto frontiers,financebench-heldout-v1,answer_token_f1,P3,0.16952237818427582,145,1.0,0.4,5632.504335172341,0,P0
+Table T2: Unweighted quality-latency Pareto frontiers,financebench-heldout-v1,context_faithfulness,P1,0.8502707749766574,85,0.5862068965517241,0.4,1932.8805600000187,1,
+Table T2: Unweighted quality-latency Pareto frontiers,financebench-heldout-v1,context_faithfulness,P2,0.8203409090909091,80,0.5517241379310345,0.43448275862068964,2245.601484827634,0,P1
+Table T2: Unweighted quality-latency Pareto frontiers,financebench-heldout-v1,context_faithfulness,P3,0.832281284606866,86,0.593103448275862,0.4,5632.504335172341,0,P1
+Table T2: Unweighted quality-latency Pareto frontiers,financebench-heldout-v1,recall_at_5,P1,0.3620689655172414,145,1.0,0.4,1932.8805600000187,1,
+Table T2: Unweighted quality-latency Pareto frontiers,financebench-heldout-v1,recall_at_5,P2,0.2896551724137931,145,1.0,0.43448275862068964,2245.601484827634,0,P1
+Table T2: Unweighted quality-latency Pareto frontiers,financebench-heldout-v1,recall_at_5,P3,0.3689655172413793,145,1.0,0.4,5632.504335172341,1,
+Table T2: Unweighted quality-latency Pareto frontiers,financebench-heldout-v1,gold_evidence_support,P0,0.5828869047619047,112,0.7724137931034483,0.0,2073.9830206896995,0,P1
+Table T2: Unweighted quality-latency Pareto frontiers,financebench-heldout-v1,gold_evidence_support,P1,0.6358481545228534,83,0.5724137931034483,0.4,1932.8805600000187,1,
+Table T2: Unweighted quality-latency Pareto frontiers,financebench-heldout-v1,gold_evidence_support,P2,0.6209876543209877,81,0.5586206896551724,0.43448275862068964,2245.601484827634,0,P1
+Table T2: Unweighted quality-latency Pareto frontiers,financebench-heldout-v1,gold_evidence_support,P3,0.6524836601307189,85,0.5862068965517241,0.4,5632.504335172341,1,

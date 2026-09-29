@@ -1,0 +1,9 @@
+{
+  "model_name": "intfloat/e5-base-v2",
+  "embedding_dimension": 768,
+  "chunk_count": 24410,
+  "index_path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\data\\indices\\dense\\faiss.index",
+  "metadata_path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\data\\indices\\dense\\metadata.json",
+  "index_type": "IndexFlatIP",
+  "metric": "cosine_similarity_via_normalized_inner_product"
+}

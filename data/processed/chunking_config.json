@@ -1,0 +1,15 @@
+{
+  "tokenizer_name": "intfloat/e5-base-v2",
+  "chunk_size": 512,
+  "chunk_overlap": 50,
+  "passage_prefix": "passage: ",
+  "special_token_count": 2,
+  "prefix_token_count": 2,
+  "content_capacity": 508,
+  "step_size": 458,
+  "pages_total": 12013,
+  "pages_with_text": 11948,
+  "chunks_total": 24410,
+  "page_boundary_policy": "chunks_never_cross_pages",
+  "page_indexing": "zero_based"
+}

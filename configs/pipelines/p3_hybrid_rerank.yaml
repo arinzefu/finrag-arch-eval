@@ -1,0 +1,22 @@
+pipeline:
+  id: P3
+  name: hybrid_rerank
+
+retrieval:
+  enabled: true
+  type: hybrid
+  dense_k: 20
+  sparse_k: 20
+
+  fusion:
+    method: rrf
+    rrf_k: 60
+
+reranking:
+  enabled: true
+  candidate_k: 20
+  final_k: 5
+  model_name: cross-encoder/ms-marco-MiniLM-L6-v2
+  max_length: 512
+  window_overlap: 64
+  batch_size: 32

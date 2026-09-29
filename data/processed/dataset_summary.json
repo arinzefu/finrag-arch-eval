@@ -1,0 +1,46 @@
+{
+  "questions": 150,
+  "unique_question_ids": 150,
+  "unique_documents": 84,
+  "unique_companies": 32,
+  "question_types": {
+    "metrics-generated": 50,
+    "domain-relevant": 50,
+    "novel-generated": 50
+  },
+  "question_reasoning": {
+    "None": 50,
+    "Numerical reasoning": 43,
+    "Information extraction": 31,
+    "Numerical reasoning OR Logical reasoning": 6,
+    "Logical reasoning (based on numerical reasoning)": 5,
+    "Logical reasoning (based on numerical reasoning) OR Logical reasoning": 5,
+    "Logical reasoning (based on numerical reasoning) OR Numerical reasoning OR Logical reasoning": 4,
+    "Numerical reasoning OR information extraction": 4,
+    "Information extraction OR Logical reasoning OR": 1,
+    "Information extraction OR Logical reasoning": 1
+  },
+  "document_types": {
+    "10k": 112,
+    "10q": 15,
+    "Earnings": 14,
+    "8k": 9
+  },
+  "evidence": {
+    "total_annotations": 189,
+    "min_annotations_per_question": 1,
+    "max_annotations_per_question": 3,
+    "mean_annotations_per_question": 1.26
+  },
+  "integrity": {
+    "rows": 150,
+    "unique_financebench_ids": 150,
+    "duplicate_financebench_ids": 0,
+    "missing_financebench_ids": 0,
+    "missing_questions": 0,
+    "missing_answers": 0,
+    "missing_doc_names": 0,
+    "missing_doc_links": 0,
+    "missing_evidence": 0
+  }
+}

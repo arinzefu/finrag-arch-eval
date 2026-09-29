@@ -1,0 +1,190 @@
+{
+  "title": "Stage 20: Prespecified paired architecture tests",
+  "created_at_utc": "2026-09-28T22:14:57.195475+00:00",
+  "run_manifest": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_manifest.json",
+  "run_manifest_sha256": "8fdfb063e37d70d5cddbfdb4986a240e4f0390032eb6abab9d7bab1c39d4cd25",
+  "inputs": {
+    "answer": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\answer_metrics_v2.csv",
+      "sha256": "d6c6df472f235beafc3e6736050bec78c009c2407d6f3371f2a0678d531f3893"
+    },
+    "retrieval": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\retrieval_metrics.csv",
+      "sha256": "68f41a530ab09254eb1625810b8eadb8d7d77d832e7dd6d0817a3c18f69e3b27"
+    },
+    "faithfulness": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\faithfulness_metrics.csv",
+      "sha256": "7e0722bd6c66f0378e133949f4c1ba46f54fc571348e4c5b767c5413f6832bc1"
+    },
+    "latency": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\latency_metrics.csv",
+      "sha256": "b4a6ce3175e56871d397c422a9b28e99dd275307cb70e444ecdec4f21d818c95"
+    }
+  },
+  "parameters": {
+    "comparisons": [
+      {
+        "hypothesis": "H0,H1",
+        "architecture_a": "P0",
+        "architecture_b": "P1",
+        "metric": "gold_evidence_support",
+        "population": "scored_units_only"
+      },
+      {
+        "hypothesis": "H0",
+        "architecture_a": "P0",
+        "architecture_b": "P2",
+        "metric": "gold_evidence_support",
+        "population": "scored_units_only"
+      },
+      {
+        "hypothesis": "H0",
+        "architecture_a": "P0",
+        "architecture_b": "P3",
+        "metric": "gold_evidence_support",
+        "population": "scored_units_only"
+      },
+      {
+        "hypothesis": "H0",
+        "architecture_a": "P0",
+        "architecture_b": "P1",
+        "metric": "exact_match",
+        "population": "all_questions"
+      },
+      {
+        "hypothesis": "H0",
+        "architecture_a": "P0",
+        "architecture_b": "P1",
+        "metric": "token_f1",
+        "population": "all_questions"
+      },
+      {
+        "hypothesis": "H0",
+        "architecture_a": "P0",
+        "architecture_b": "P1",
+        "metric": "numeric_accuracy",
+        "population": "gold_numeric_questions"
+      },
+      {
+        "hypothesis": "H0",
+        "architecture_a": "P0",
+        "architecture_b": "P1",
+        "metric": "total_latency_ms",
+        "population": "all_questions"
+      },
+      {
+        "hypothesis": "H0",
+        "architecture_a": "P0",
+        "architecture_b": "P2",
+        "metric": "exact_match",
+        "population": "all_questions"
+      },
+      {
+        "hypothesis": "H0",
+        "architecture_a": "P0",
+        "architecture_b": "P2",
+        "metric": "token_f1",
+        "population": "all_questions"
+      },
+      {
+        "hypothesis": "H0",
+        "architecture_a": "P0",
+        "architecture_b": "P2",
+        "metric": "numeric_accuracy",
+        "population": "gold_numeric_questions"
+      },
+      {
+        "hypothesis": "H0",
+        "architecture_a": "P0",
+        "architecture_b": "P2",
+        "metric": "total_latency_ms",
+        "population": "all_questions"
+      },
+      {
+        "hypothesis": "H0",
+        "architecture_a": "P0",
+        "architecture_b": "P3",
+        "metric": "exact_match",
+        "population": "all_questions"
+      },
+      {
+        "hypothesis": "H0",
+        "architecture_a": "P0",
+        "architecture_b": "P3",
+        "metric": "token_f1",
+        "population": "all_questions"
+      },
+      {
+        "hypothesis": "H0",
+        "architecture_a": "P0",
+        "architecture_b": "P3",
+        "metric": "numeric_accuracy",
+        "population": "gold_numeric_questions"
+      },
+      {
+        "hypothesis": "H0",
+        "architecture_a": "P0",
+        "architecture_b": "P3",
+        "metric": "total_latency_ms",
+        "population": "all_questions"
+      },
+      {
+        "hypothesis": "H2",
+        "architecture_a": "P1",
+        "architecture_b": "P2",
+        "metric": "hit_at_5",
+        "population": "all_questions"
+      },
+      {
+        "hypothesis": "H2",
+        "architecture_a": "P1",
+        "architecture_b": "P2",
+        "metric": "recall_at_5",
+        "population": "all_questions"
+      },
+      {
+        "hypothesis": "H2",
+        "architecture_a": "P1",
+        "architecture_b": "P2",
+        "metric": "mrr_at_5",
+        "population": "all_questions"
+      },
+      {
+        "hypothesis": "H2",
+        "architecture_a": "P1",
+        "architecture_b": "P2",
+        "metric": "numeric_accuracy",
+        "population": "gold_numeric_questions"
+      },
+      {
+        "hypothesis": "H3",
+        "architecture_a": "P2",
+        "architecture_b": "P3",
+        "metric": "context_faithfulness",
+        "population": "scored_units_only"
+      },
+      {
+        "hypothesis": "H3",
+        "architecture_a": "P2",
+        "architecture_b": "P3",
+        "metric": "total_latency_ms",
+        "population": "all_questions"
+      }
+    ],
+    "direction": "architecture_b minus architecture_a; positive is hypothesized",
+    "tests": "two-sided exact McNemar for binary; two-sided Wilcoxon signed-rank with zero differences removed for scores",
+    "effect": "signed-rank biserial (W+ - W-) / (W+ + W-), nonzero differences only; NA for McNemar",
+    "missing_pairs": "pairwise complete cases, never zero-impute abstentions or inapplicable numeric scores",
+    "confidence_interval": "paired percentile bootstrap of mean B-A difference",
+    "bootstrap_replicates": 10000,
+    "bootstrap_seed": "first 8 bytes of SHA256(run_id:architecture_a:architecture_b:metric)",
+    "multiple_testing": "Holm adjustment over all prespecified rows",
+    "alpha": 0.05,
+    "numpy_version": "2.4.6",
+    "scipy_version": "1.17.1"
+  },
+  "outputs": {
+    "hypothesis_tests": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\statistics\\hypothesis_tests.csv",
+    "abstention_summary": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\statistics\\abstention_summary.csv"
+  }
+}

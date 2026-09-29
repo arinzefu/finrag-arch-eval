@@ -1,0 +1,10 @@
+{
+  "questions": 150,
+  "evidence_items": 189,
+  "evidence_items_with_strict_chunk_match": 189,
+  "questions_with_partial_chunk_mapping": 0,
+  "missing_gold_page_references": 0,
+  "containment_threshold": 0.35,
+  "page_indexing": "zero_based",
+  "strict_chunk_definition": "evidence-text matched chunks only; page-level chunks are stored separately in gold_page_chunk_ids"
+}

@@ -1,0 +1,44 @@
+{
+  "title": "Stage 19: Native FinanceBench category performance",
+  "created_at_utc": "2026-09-28T22:02:49.552278+00:00",
+  "run_manifest": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_manifest.json",
+  "run_manifest_sha256": "8fdfb063e37d70d5cddbfdb4986a240e4f0390032eb6abab9d7bab1c39d4cd25",
+  "inputs": {
+    "native_labels": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\data\\splits\\common_evaluation.jsonl",
+      "sha256": "7a597f649ee697cabc27744b0989b36b51610a8fb7675f68b93bc19a7b73d666"
+    },
+    "answer_metrics": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\answer_metrics_v2.csv",
+      "sha256": "d6c6df472f235beafc3e6736050bec78c009c2407d6f3371f2a0678d531f3893"
+    },
+    "retrieval_metrics": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\retrieval_metrics.csv",
+      "sha256": "68f41a530ab09254eb1625810b8eadb8d7d77d832e7dd6d0817a3c18f69e3b27"
+    },
+    "faithfulness_metrics": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\faithfulness_metrics.csv",
+      "sha256": "7e0722bd6c66f0378e133949f4c1ba46f54fc571348e4c5b767c5413f6832bc1"
+    },
+    "latency_metrics": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\latency_metrics.csv",
+      "sha256": "b4a6ce3175e56871d397c422a9b28e99dd275307cb70e444ecdec4f21d818c95"
+    }
+  },
+  "parameters": {
+    "categories": [
+      "question_type",
+      "question_reasoning"
+    ],
+    "label_coverage": {
+      "question_type": 145,
+      "question_reasoning": 96
+    },
+    "missing_reasoning_policy": "Exclude source-null reasoning labels from reasoning groups; retain those questions in question_type groups",
+    "aggregation": "arithmetic mean over applicable observations; NA excluded, denominator saved per metric",
+    "derived_labels": "none"
+  },
+  "outputs": {
+    "summary": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\aggregated\\question_type_summary.csv"
+  }
+}

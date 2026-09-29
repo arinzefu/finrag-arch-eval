@@ -1,0 +1,12 @@
+pipeline:
+  id: P1
+  name: dense_rag
+
+retrieval:
+  enabled: true
+  type: dense
+  candidate_k: 5
+  final_k: 5
+
+reranking:
+  enabled: false

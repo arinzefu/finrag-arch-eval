@@ -1,0 +1,46 @@
+{
+  "title": "Stage 15: Held-out Page-Level Retrieval Evaluation",
+  "run_id": "financebench-heldout-v1",
+  "created_at_utc": "2026-09-28T19:51:27.398246+00:00",
+  "evaluation_unit": "(doc_name, zero-indexed page)",
+  "architectures": [
+    "P1",
+    "P2",
+    "P3"
+  ],
+  "question_count_per_architecture": 145,
+  "metric_definitions": {
+    "hit_at_k": "1 if any gold page occurs among the first k final chunks; else 0",
+    "recall_at_5": "unique gold pages in the first 5 chunks / unique gold pages",
+    "mrr_at_5": "reciprocal first gold chunk rank in the final top 5; 0 if absent"
+  },
+  "run_manifest": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_manifest.json",
+  "run_manifest_sha256": "8fdfb063e37d70d5cddbfdb4986a240e4f0390032eb6abab9d7bab1c39d4cd25",
+  "evidence_mapping": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\data\\processed\\evidence_mapping.json",
+  "evidence_mapping_sha256": "d8c3ee8155f047d865cc9e572a71ef949821e824c7b193e046b84b42e5eae15f",
+  "raw_output_sha256": {
+    "P1": "fb15c3d6321f9fb3f534e23fee1a94f68ca36e4fd3802f054d87f8405610e676",
+    "P2": "b117ba61634367f2e13b12043c8b5412c1250925829a1818c72c1f19c34be3b7",
+    "P3": "bc37c4f40483786196c9f2b5c802eabbabad594f7ff9d2555ac72bfda85341e2"
+  },
+  "experiment_settings": {
+    "p1_dense_k": 5,
+    "p2_dense_k": 10,
+    "p2_sparse_k": 10,
+    "p2_fusion_k": 5,
+    "p3_dense_k": 20,
+    "p3_sparse_k": 20,
+    "p3_fusion_k": 20,
+    "final_context_k": 5,
+    "rrf_k": 60,
+    "reranker_max_length": 512,
+    "reranker_window_overlap": 64,
+    "reranker_batch_size": 32
+  },
+  "outputs": {
+    "per_question_title": "Stage 15: Page-Level Retrieval Metrics by Question",
+    "per_question_csv": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\retrieval_metrics.csv",
+    "summary_title": "Table R1: Held-out page-level retrieval performance",
+    "summary_csv": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\aggregated\\retrieval_summary.csv"
+  }
+}

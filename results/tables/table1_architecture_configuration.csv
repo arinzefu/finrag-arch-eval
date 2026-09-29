@@ -1,0 +1,5 @@
+table_title,run_id,architecture,retrieval_design,dense_candidate_k,bm25_candidate_k,fusion_method,rrf_k,fusion_candidate_k,reranker_model,reranker_max_length,reranker_window_overlap,reranker_batch_size,final_context_k,llm_model,generation_max_output_tokens,temperature_policy,prompt_policy
+Table 1: Frozen architecture configuration,financebench-heldout-v1,P0,closed_book,,,,,,,,,,0,gpt-4o-mini,256,API default (unset),closed_book
+Table 1: Frozen architecture configuration,financebench-heldout-v1,P1,dense,5,,,,,,,,,5,gpt-4o-mini,256,API default (unset),shared_rag_p1_p3
+Table 1: Frozen architecture configuration,financebench-heldout-v1,P2,hybrid_rrf,10,10,RRF,60,5,,,,,5,gpt-4o-mini,256,API default (unset),shared_rag_p1_p3
+Table 1: Frozen architecture configuration,financebench-heldout-v1,P3,hybrid_rrf_cross_encoder,20,20,RRF,60,20,cross-encoder/ms-marco-MiniLM-L6-v2,512,64,32,5,gpt-4o-mini,256,API default (unset),shared_rag_p1_p3

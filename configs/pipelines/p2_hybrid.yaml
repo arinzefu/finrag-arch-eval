@@ -1,0 +1,18 @@
+pipeline:
+  id: P2
+  name: hybrid_rag
+
+retrieval:
+  enabled: true
+  type: hybrid
+  dense_k: 10
+  sparse_k: 10
+  candidate_k: 5
+  final_k: 5
+
+  fusion:
+    method: rrf
+    rrf_k: 60
+
+reranking:
+  enabled: false

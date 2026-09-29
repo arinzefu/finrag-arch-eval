@@ -1,0 +1,5 @@
+table_title,run_id,architecture,question_count,exact_abstention_count,exact_abstention_rate,context_scored_count,gold_scored_count
+Table S2: Abstention and support-score coverage,financebench-heldout-v1,P0,145,0,0.0,0,112
+Table S2: Abstention and support-score coverage,financebench-heldout-v1,P1,145,58,0.4,85,83
+Table S2: Abstention and support-score coverage,financebench-heldout-v1,P2,145,63,0.43448275862068964,80,81
+Table S2: Abstention and support-score coverage,financebench-heldout-v1,P3,145,58,0.4,86,85

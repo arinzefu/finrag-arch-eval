@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "status": "frozen",
+  "frozen_at_utc": "2026-09-28T16:40:31.0889743Z",
+  "corpus": {
+    "path": "data/processed/chunks.jsonl",
+    "chunk_count": 24410,
+    "file_sha256": "fa3331599807c8b16ea5ae628b433eb092c4d9cf8b407f043e0cb578f6ad62ca",
+    "canonical_retrieval_sha256": "510be25b335e59a10edf4d1043e56e454ef788fc465907f93ba14a0d85045162",
+    "canonical_hash_fields": [
+      "chunk_id",
+      "retrieval_text"
+    ],
+    "retrieval_text_schema": "document_header_v2"
+  },
+  "dense_index": {
+    "path": "data/indices/dense/faiss.index",
+    "file_sha256": "f939784b8ed4c7e5f3ce0de37f4b4879cf02f2e80cae2cadc2382b399b3c0f8b",
+    "metadata_path": "data/indices/dense/metadata.json",
+    "metadata_file_sha256": "3d681be4e4a02d3ece90eb6d21404f2bde82366301219264fdd7e0dafd42e330",
+    "chunk_count": 24410,
+    "canonical_retrieval_sha256": "510be25b335e59a10edf4d1043e56e454ef788fc465907f93ba14a0d85045162",
+    "embedding_model": "intfloat/e5-base-v2",
+    "embedding_dimension": 768
+  },
+  "bm25_index": {
+    "path": "data/indices/bm25/bm25.pkl",
+    "file_sha256": "1a3fac503c149ad9aa51b79e28002912842039b7b75fe26a5f00cf22ca219a98",
+    "metadata_path": "data/indices/bm25/metadata.json",
+    "metadata_file_sha256": "18f8c3109cc57d3d132f8fe4ddfcb7c2f7bd3ae9c3ff5eb6810b55e995226ba7",
+    "chunk_count": 24410,
+    "canonical_retrieval_sha256": "510be25b335e59a10edf4d1043e56e454ef788fc465907f93ba14a0d85045162",
+    "tokenizer_id": "financial_regex_v1"
+  },
+  "validation": {
+    "chunk_ids_and_order_match": true,
+    "canonical_content_matches_dense_metadata": true,
+    "canonical_content_matches_bm25_metadata": true
+  }
+}
