@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Stage 22: publish titled dissertation figures and tables from frozen results."""
+"""Stage 22: publish titled figures and tables from frozen results."""
 
 from __future__ import annotations
 
@@ -136,7 +136,7 @@ def load_inputs(manifest: dict, manifest_path: Path = MANIFEST) -> dict:
     statistics = read_csv(INPUTS["statistics"])
     expected_tests = len(stage_manifests["statistics_manifest"]["parameters"]["comparisons"])
     if len(statistics) != expected_tests or any(row["run_id"] != run_id for row in statistics):
-        raise ValueError("Stage 20 paired-test table is incomplete or from another run")
+        raise ValueError("Paired-test table is incomplete or from another run")
     data["statistics"] = statistics
     frontiers = read_csv(INPUTS["frontiers"])
     expected_frontiers = sum(len(item["eligible_architectures"])
@@ -470,7 +470,7 @@ def publish(manifest_path: Path, manifest: dict, staged: dict[str, Path]) -> Non
         with staged[name].open("rb") as source, destination.open("xb") as target:
             shutil.copyfileobj(source, target)
     payload = {
-        "title": "Stage 22: Final dissertation figures and tables",
+        "title": "Final figures and tables",
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "run_id": manifest["run_id"],
         "run_manifest": {"path": str(manifest_path.resolve()), "sha256": sha256(manifest_path)},
@@ -480,10 +480,10 @@ def publish(manifest_path: Path, manifest: dict, staged: dict[str, Path]) -> Non
             "figure_formats": ["png", "pdf"], "figure_png_dpi": 220,
             "matplotlib_version": matplotlib.__version__,
             "numpy_version": np.__version__,
-            "plot_data": "persisted Stage 15-21 summaries only; architecture configuration from frozen run manifest",
+            "plot_data": "persisted summaries only; architecture configuration from frozen run manifest",
             "native_reasoning_coverage": "source-labeled questions only, never post hoc inferred",
             "support_policy": "conditional on answers with scored factual units; coverage and abstention shown separately",
-            "pareto_policy": "unweighted Stage 21 point-estimate frontiers; no final architecture winner inferred",
+            "pareto_policy": "unweighted point-estimate frontiers; no final architecture winner inferred",
             "latency_policy": "recorded per-question total; excludes pipeline/model initialization",
             "judge_caveat": "see results/evaluation/faithfulness_audit_report.md",
         },

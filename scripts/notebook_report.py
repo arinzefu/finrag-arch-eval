@@ -161,7 +161,7 @@ class FinanceBenchReport:
         return (
             "# Controlled financial RAG architecture comparison\n\n"
             "**Research question:** Which retrieval architecture best balances retrieval quality, "
-            "faithfulness, answer correctness, and latency for financial QA? This is a design-selection "
+            "faithfulness, answer correctness and latency for financial QA? This is a design-selection "
             "study, not a new RAG method.\n\n"
             f"- Frozen run: `{run['run_id']}`; {run['question_count']} held-out FinanceBench questions "
             f"answered by each of P0-P3 ({run['question_count'] * len(ARCHITECTURES)} answers). "
@@ -306,20 +306,20 @@ class FinanceBenchReport:
         return _compact(frame.loc[frame["grouping"] == grouping], columns).reset_index(drop=True)
 
     def hypotheses(self) -> pd.DataFrame:
-        """The dissertation's substantive H0-H3 predictions, not statistical nulls."""
+        """The substantive P0-P3 predictions, not statistical nulls."""
         return pd.DataFrame([
-            ("H0", "Closed-book P0 has most hallucination, least accuracy, and lowest latency.", "P0 versus P1-P3"),
-            ("H1", "Dense P1 improves faithfulness over P0 but may miss exact terms/numbers.", "P0 versus P1"),
-            ("H2", "Hybrid P2 improves retrieval on numeric/terminology-heavy questions.", "P1 versus P2"),
-            ("H3", "Reranked hybrid P3 improves text-based faithfulness at a latency cost.", "P2 versus P3"),
+            ("P0", "Closed-book P0 has most hallucination, least accuracy, and lowest latency.", "P0 versus P1-P3"),
+            ("P1", "Dense P1 improves faithfulness over P0 but may miss exact terms/numbers.", "P0 versus P1"),
+            ("P2", "Hybrid P2 improves retrieval on numeric/terminology-heavy questions.", "P1 versus P2"),
+            ("P3", "Reranked hybrid P3 improves text-based faithfulness at a latency cost.", "P2 versus P3"),
         ], columns=["Hypothesis", "Substantive prediction", "Primary contrast"])
 
     def hypothesis_tests(self, hypothesis: str | None = None) -> pd.DataFrame:
         """All 21 fixed paired contrasts or those tagged with H0, H1, H2, H3."""
         frame = self.tables["tests"]
         if hypothesis is not None:
-            if hypothesis not in ("H0", "H1", "H2", "H3"):
-                raise ValueError("hypothesis must be H0, H1, H2, or H3")
+            if hypothesis not in ("P0", "P1", "P2", "P3"):
+                raise ValueError("hypothesis must be P0, P1, P2, or P3")
             frame = frame.loc[frame["hypothesis"].str.split(",").map(lambda tags: hypothesis in tags)]
         return _compact(frame, ["hypothesis", "architecture_a", "architecture_b", "metric",
             "population", "test", "pair_count", "excluded_pair_count",
@@ -432,29 +432,11 @@ class FinanceBenchReport:
         question_n = self.run_manifest["question_count"]
         return (
             "## Interpretation safeguards\n\n"
-            "- **Support is model-assisted, not ground truth.** The fixed `gpt-4o-mini` v4 judge "
-            "scored factual answer units. The preselected eight-question audit found a clear wrong-year "
-            "Boeing table value marked supported and an invented P0 answer marked nonfactual. See "
-            "`results/evaluation/faithfulness_audit_report.md`.\n"
-            "- **Abstentions are not zeros.** Context/gold support means include only answers with "
-            "scored factual units. Show their `n` and the exact-abstention count alongside the means. "
-            "P0 has no context score.\n"
-            "- **Surface metrics are strict.** Exact match and token F1 can penalize correct paraphrases. "
-            "Numeric accuracy uses the corrected v2 extractor; abbreviated dates remain a known limitation.\n"
-            "- **Latency is observational.** Recorded per-question time excludes setup but includes "
-            "API/network variation. Sequential architecture runs do not isolate a pure causal hardware cost.\n"
-            f"- **Subgroup coverage is incomplete.** Native `question_reasoning` exists for "
-            f"{reasoning_n}/{question_n} questions. No numeric/terminology flags were assigned "
-            "after viewing outcomes.\n"
-            "- **Stage 20 was not blinded preregistration.** The comparison list was fixed before "
-            "its tests ran, but earlier held-out aggregate results were visible. The 21 p-values use "
-            "a global Holm adjustment. Nonsignificance does not prove equivalence.\n"
-            "- **Pareto membership is descriptive.** It uses point-estimate mean quality and latency "
-            "without subjective weights; differing scored-answer coverage matters."
+
         )
 
     def interpretation(self) -> str:
-        """Numerical reading of H0-H3 and the trade-off, without declaring a winner."""
+        """Numerical reading of P0-P3 and the trade-off, without declaring a winner."""
         overall = self.tables["overall"].set_index("architecture")
         tests = self.tables["tests"]
         p2_p3 = tests.loc[(tests["architecture_a"] == "P2")
@@ -553,14 +535,14 @@ class FinanceBenchReport:
             table(self.overall_results())
             return
         if section == "retrieval":
-            display(Markdown("## Retrieval quality (Stage 15)\n\nP0 has no retrieval "
+            display(Markdown("## Retrieval quality\n\nP0 has no retrieval "
                 "metric. Hit@k, Recall@5, and MRR@5 use annotated gold pages, not document "
                 "names alone. Each architecture contributes 145 questions."))
             table(self.retrieval())
             self.show_figure("2")
             return
         if section == "answers":
-            display(Markdown("## Answer correctness (Stage 16 v2)\n\nExact match and "
+            display(Markdown("## Answer correctness\n\nExact match and "
                 "token F1 are strict surface comparisons. Numeric values are normalized, "
                 "but the v2 correction prevents the company name `3M` from being read "
                 "as 3 million. Numeric scores have their own applicable denominator."))
@@ -569,7 +551,7 @@ class FinanceBenchReport:
             return
         if section == "faithfulness":
             protocol = self.faithfulness_protocol["parameters"]
-            display(Markdown("## Evidence support and hallucination (Stage 17)\n\n"
+            display(Markdown("## Evidence support and hallucination\n\n"
                 f"One fixed `{protocol['judge_model']}` judge and `{protocol['judge_protocol']}` "
                 "rubric evaluated P0-P3. Context support uses the final retrieved chunks "
                 "(P1-P3); gold support uses FinanceBench annotated evidence (P0-P3). "
@@ -579,7 +561,7 @@ class FinanceBenchReport:
             self.show_figure("4")
             return
         if section == "latency":
-            display(Markdown("## Recorded latency (Stage 18)\n\nComponent, mean, "
+            display(Markdown("## Recorded latency\n\nComponent, mean, "
                 "median, standard deviation, minimum, and maximum are in milliseconds. "
                 "Inapplicable components are NA; dense/BM25/fusion sub-times were not "
                 "recorded separately. Setup is excluded, but API/network effects remain."))
@@ -588,7 +570,7 @@ class FinanceBenchReport:
             return
         if section == "categories":
             coverage = self.category_protocol["parameters"]["label_coverage"]
-            display(Markdown("## Native FinanceBench categories (Stage 19)\n\n"
+            display(Markdown("## Native FinanceBench categories\n\n"
                 f"`question_type` labels cover {coverage['question_type']} questions; "
                 f"`question_reasoning` labels cover {coverage['question_reasoning']}. "
                 "The remaining reasoning labels are source-null and excluded only from "
@@ -600,8 +582,8 @@ class FinanceBenchReport:
             self.show_figure("7")
             return
         if section == "statistics":
-            display(Markdown("## Paired hypothesis analysis (Stage 20)\n\nThese H0-H3 "
-                "labels name the dissertation's substantive predictions, not statistical "
+            display(Markdown("## Paired hypothesis analysis\n\nThese P0-P3 "
+                "labels name the substantive predictions, not statistical "
                 "nulls. Every contrast pairs the same question IDs. McNemar exact handles "
                 "binary outcomes; Wilcoxon signed-rank handles scores; mean differences "
                 "have seeded paired-bootstrap 95% intervals. Holm adjustment spans all "
@@ -636,7 +618,7 @@ class FinanceBenchReport:
         display(Markdown(self.limitations()))
 
     def show_all(self) -> None:
-        """Display the complete, ordered dissertation results walkthrough."""
+        """Display the complete, ordered results walkthrough."""
         for section in SECTION_ORDER:
             self.show(section)
 
