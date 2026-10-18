@@ -1,6 +1,6 @@
 {
-  "title": "Stage 22: Final figures and tables",
-  "created_at_utc": "2026-09-28T22:33:41.976784+00:00",
+  "title": "Final figures and tables",
+  "created_at_utc": "2026-10-17T23:57:28.682484+00:00",
   "run_id": "financebench-heldout-v1",
   "run_manifest": {
     "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_manifest.json",
@@ -13,7 +13,11 @@
     },
     "answers": {
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\aggregated\\answer_summary_v2.csv",
-      "sha256": "814a956d98fde1fe4580db13b70b63bbed59c0f9d414560cc64017a652854197"
+      "sha256": "e0ab9acb85fd80db07bdd155cb4842239340a683f892455135f9970c70ec5c63"
+    },
+    "answer_quality_manifest": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\answer_quality_evaluation_manifest.json",
+      "sha256": "96a0682c13c105657da03c854f49b410423b96b6e0713ec8fa99820fa8a9247a"
     },
     "faithfulness": {
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\aggregated\\faithfulness_summary.csv",
@@ -25,7 +29,7 @@
     },
     "categories": {
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\aggregated\\question_type_summary.csv",
-      "sha256": "c3328da5983e1ad0a638f054b234dc8a6ed0edaf474f23bb6109e3b6a0956d48"
+      "sha256": "c898c7a3307695b9756a8e4dafd18d9ed877e855bc7fad719270b684dd0f8a90"
     },
     "statistics": {
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\statistics\\hypothesis_tests.csv",
@@ -41,19 +45,19 @@
     },
     "category_manifest": {
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\aggregated\\question_type_summary_manifest.json",
-      "sha256": "62e2de16dbf03c89a2e4f363d519df91730d1a74addb94e93d5de2ab373f11d8"
+      "sha256": "4afd5d780668c6b67fc3ead7262319b83b502347837e8aba42f794560f8ee2c5"
     },
     "statistics_manifest": {
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\statistics\\hypothesis_tests_manifest.json",
-      "sha256": "ec153bec5186876f7994ff8394df6b85194f44e006f2ac3d9a94e3aba15ffa1f"
+      "sha256": "c09e00e3b1acbf6621aec53773158a7a40cf5201ffe8cac5ebafcea2b46a98df"
     },
     "tradeoff_manifest": {
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\aggregated\\tradeoff_summary_manifest.json",
-      "sha256": "c13da22da328baa7a506f9b1829b178270460fc2f5eca9b68db866a5526decb2"
+      "sha256": "a47e88cfc68b0bd36df438ad174602e0f30a3e0b1ea7b87b96f2292bbaa97120"
     },
     "reranker_source": {
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\src\\retrieval\\reranker.py",
-      "sha256": "b6fce3b84834314238a0a74828996d3f9d37818563b838fecc0db2811c35d0ea"
+      "sha256": "d1023bcbf2d157263b20ddd7a33d7801c86aa900e5c3ef65a6155b7d5803a842"
     }
   },
   "parameters": {
@@ -62,105 +66,106 @@
       "pdf"
     ],
     "figure_png_dpi": 220,
-    "matplotlib_version": "3.10.8",
-    "numpy_version": "2.4.6",
-    "plot_data": "persisted Stage 15-21 summaries only; architecture configuration from frozen run manifest",
+    "matplotlib_version": "3.11.2",
+    "numpy_version": "2.5.4",
+    "plot_data": "persisted summaries only; architecture configuration from frozen run manifest",
     "native_reasoning_coverage": "source-labeled questions only, never post hoc inferred",
     "support_policy": "conditional on answers with scored factual units; coverage and abstention shown separately",
-    "pareto_policy": "unweighted Stage 21 point-estimate frontiers; no final architecture winner inferred",
+    "pareto_policy": "unweighted point-estimate frontiers; no final architecture winner inferred",
     "latency_policy": "recorded per-question total; excludes pipeline/model initialization",
-    "judge_caveat": "see results/evaluation/faithfulness_audit_report.md"
+    "judge_caveat": "see results/evaluation/faithfulness_audit_report.md",
+    "answer_quality_policy": "post-hoc model-judged correctness and reference completeness; semantic means exclude judge_error scores and retain valid n; conditional non-abstention means use valid semantic rows only; all-question correctness bounds count every judge error as incorrect/correct respectively; BERTScore is similarity, not accuracy"
   },
   "outputs": {
     "figure01_architecture_overview.png": {
       "title": "Figure 1. Frozen architecture overview",
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\figures\\figure01_architecture_overview.png",
-      "sha256": "afecd04a0bf71a566234c01d882700b42ab80df89ec89e1b8ec1495dcfe9e86c"
+      "sha256": "f5563adcd6a2c39b42969e22637db66c0c79e8e2f0794e7a8b52a94ba8f2b6fb"
     },
     "figure01_architecture_overview.pdf": {
       "title": "Figure 1. Frozen architecture overview",
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\figures\\figure01_architecture_overview.pdf",
-      "sha256": "fdc367ce72e933ae6a936e4a0bfcca130506b791a8cba955270d11b4272fb737"
+      "sha256": "63b792c61b0fd574215ec61ab3d21bd7bfcd9504f41ebc96bff53cc52de0e867"
     },
     "figure02_recall_at_5.png": {
       "title": "Figure 2. Gold-page Recall@5",
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\figures\\figure02_recall_at_5.png",
-      "sha256": "2d3499152a7cea1d17b37aacfb822c366d49c889b779e5d01eb6aa81a0971ca6"
+      "sha256": "3970cb4ac5eff618546e362d15db53f248a20231efc501a2abb35ec7591020af"
     },
     "figure02_recall_at_5.pdf": {
       "title": "Figure 2. Gold-page Recall@5",
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\figures\\figure02_recall_at_5.pdf",
-      "sha256": "cdf608d1f68179add185e4597c4f123681a111ee85aa4b5e0659732477ce5500"
+      "sha256": "413c576dc0bc762ebde6c18515a9ec3b4a0d2360d77e6025b21f192b6e205021"
     },
     "figure03_answer_correctness.png": {
-      "title": "Figure 3. Held-out answer correctness",
+      "title": "Figure 3. Model-judged correctness, coverage and answer similarity",
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\figures\\figure03_answer_correctness.png",
-      "sha256": "7c922edefe44c115c658c2deeaa43f752edcb64fb938100bb281557c95b6027c"
+      "sha256": "1478843eefbe8fdac55412c30e58e7183821c4e4ab21735b24cb30df3ac9c8ba"
     },
     "figure03_answer_correctness.pdf": {
-      "title": "Figure 3. Held-out answer correctness",
+      "title": "Figure 3. Model-judged correctness, coverage and answer similarity",
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\figures\\figure03_answer_correctness.pdf",
-      "sha256": "8ef679be22190caf20a0c1e2851e51e32ba4a7dfd2ba85b1b05cd66d86538be6"
+      "sha256": "7ab887da5eaf7d6c2fb1adaecf1e87e6a4765d0d830ac2a00c37e14c315976d3"
     },
     "figure04_evidence_support.png": {
       "title": "Figure 4. Evidence support and scored-answer coverage",
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\figures\\figure04_evidence_support.png",
-      "sha256": "e81c4096face25fa44cd37d084e7b1513d327ddae94894e5332881ec3ac9b77e"
+      "sha256": "e6b12ad02d4325dbd02cc75f5bc6812595a5833f3344fd8b606905b0c3ed0fd2"
     },
     "figure04_evidence_support.pdf": {
       "title": "Figure 4. Evidence support and scored-answer coverage",
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\figures\\figure04_evidence_support.pdf",
-      "sha256": "49a744b1286e5941530577d2beeda4737542e5719c2d8059641428207facb022"
+      "sha256": "0ec6ce9a862f0f23aefa2e5426fb1b44e48b98750cc1c82abf83edc1da76e75a"
     },
     "figure05_total_latency.png": {
       "title": "Figure 5. Recorded total latency",
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\figures\\figure05_total_latency.png",
-      "sha256": "1dedb3a6d3f81cf6df00f2d3dd30f8b724d4492907f3bc1d5b548ba0933aa0ea"
+      "sha256": "d5184542bf2d6a0ffd06da4a76055b56bf324c89a14a0fbfb548571f34f9e85b"
     },
     "figure05_total_latency.pdf": {
       "title": "Figure 5. Recorded total latency",
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\figures\\figure05_total_latency.pdf",
-      "sha256": "cf8c743d150c9b5615ca7fd3b6b4ea5384b045859f4dc8c4af9ccec57fb56c07"
+      "sha256": "083da1e037a0042fdb762e284d9b9ec2bf4c6e46d0bc762f2acd875cf3d5a5f8"
     },
     "figure06_answer_quality_latency.png": {
       "title": "Figure 6. Answer quality versus latency",
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\figures\\figure06_answer_quality_latency.png",
-      "sha256": "ed8f21b1984bbf01e9e3a7aa928989b601f7cbe6ee512cecab0d088f4665144b"
+      "sha256": "09f17e6c5662781c706cf7c9d8a27c676127fca6b13bbf1c4ceec12cdd2b0ec5"
     },
     "figure06_answer_quality_latency.pdf": {
       "title": "Figure 6. Answer quality versus latency",
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\figures\\figure06_answer_quality_latency.pdf",
-      "sha256": "2320e260ea2aacce06975f123a37f0414a774cbba267749fc9954c35b684fd76"
+      "sha256": "3bd2bbe71f81d8ac64e4666978249412d99cdf53bd4e150e76e82726de9298c8"
     },
     "figure06b_retrieval_latency.png": {
       "title": "Figure 6b. Retrieval quality versus latency",
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\figures\\figure06b_retrieval_latency.png",
-      "sha256": "9a98d818b920c42352f0db859b8fe465fbcb78558327d3d47d8103a836503872"
+      "sha256": "60d13cb80b579ef95c5c224f52735194d97a2041379c0dee048df90f63de81eb"
     },
     "figure06b_retrieval_latency.pdf": {
       "title": "Figure 6b. Retrieval quality versus latency",
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\figures\\figure06b_retrieval_latency.pdf",
-      "sha256": "7fc89a7cb561264cca725054583ea68945fe89c0e76d53c3e2aaa65a9df61e4b"
+      "sha256": "3adfed0e3eb2d867a28ececf288e8dab0bb7a25dbc5b2cd29168ee948bd602c1"
     },
     "figure06c_faithfulness_latency.png": {
       "title": "Figure 6c. Context faithfulness versus latency",
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\figures\\figure06c_faithfulness_latency.png",
-      "sha256": "a494dd1fbfffbf25426dd74ea2c99a08caf5acafea2a8468f01ac1557eb62b6e"
+      "sha256": "ec106a3e8c9604f1d33dc9b3a3c2bdaeaf9176e02ff0dddb3dbab318f4a5cd61"
     },
     "figure06c_faithfulness_latency.pdf": {
       "title": "Figure 6c. Context faithfulness versus latency",
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\figures\\figure06c_faithfulness_latency.pdf",
-      "sha256": "2821e4a2419106841fd371eefe7fa9d107214bfbbc41aee1c0f865d4edac700b"
+      "sha256": "7cfc34d94ecbd311e68dda4a24f4e93ef225bba4f139ecafd2dda1f7f5200691"
     },
     "figure07_native_reasoning.png": {
       "title": "Figure 7. Answer quality by native reasoning category",
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\figures\\figure07_native_reasoning.png",
-      "sha256": "b973a45540d6f82622f17e54b188a1b541090d0852379f46ab696bac4696dead"
+      "sha256": "64326e72c8284d88ce19d01e859c3b8fd1fadb817f3cda7a60456be391ee4916"
     },
     "figure07_native_reasoning.pdf": {
       "title": "Figure 7. Answer quality by native reasoning category",
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\figures\\figure07_native_reasoning.pdf",
-      "sha256": "c149e47b75c0ee5ebbe2b8c8d1316cd3bb3859aab41217b00a6a72c0370a521b"
+      "sha256": "41c1ef3111f2303c10561a6a6a3046f5045de3267ce763d9cc2a2f088a1d952f"
     },
     "table1_architecture_configuration.csv": {
       "title": "Table 1: Frozen architecture configuration",
@@ -170,12 +175,12 @@
     "table2_overall_results.csv": {
       "title": "Table 2: Overall held-out results and coverage",
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\tables\\table2_overall_results.csv",
-      "sha256": "92b719f5563df5cde57c6c717ef1774fac7b1f4734e37003b680d0a6f44edccf"
+      "sha256": "3643e5509eb46e47db2a3e6087d7be98bab39876fd4cd3a05026ce53ae6fe06a"
     },
     "table3_question_category_results.csv": {
       "title": "Table 3: Native FinanceBench category results",
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\tables\\table3_question_category_results.csv",
-      "sha256": "f7f03228a5f2991f5e7484087ff8fd54fd52f0f708c6449f966d195a80abfc49"
+      "sha256": "b3a023c6913f4059d826f238dc7fc6e078f1199cda73d94f9f35559c9afa569e"
     },
     "table4_hypothesis_tests.csv": {
       "title": "Table 4: Paired hypothesis tests",

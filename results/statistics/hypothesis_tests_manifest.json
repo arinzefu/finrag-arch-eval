@@ -6,7 +6,7 @@
   "inputs": {
     "answer": {
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\answer_metrics_v2.csv",
-      "sha256": "d6c6df472f235beafc3e6736050bec78c009c2407d6f3371f2a0678d531f3893"
+      "sha256": "ca38452906a466ce010e7c4af8f9a594ebd11d619fda2c5d8b2c6ff24db4f35e"
     },
     "retrieval": {
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\retrieval_metrics.csv",
@@ -181,7 +181,8 @@
     "multiple_testing": "Holm adjustment over all prespecified rows",
     "alpha": 0.05,
     "numpy_version": "2.4.6",
-    "scipy_version": "1.17.1"
+    "scipy_version": "1.17.1",
+    "answer_quality_extension": "Input CSV gained post-hoc columns; all tested legacy values verified unchanged. Existing prespecified tests and trade-off values unchanged; new metrics descriptive."
   },
   "outputs": {
     "hypothesis_tests": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\statistics\\hypothesis_tests.csv",

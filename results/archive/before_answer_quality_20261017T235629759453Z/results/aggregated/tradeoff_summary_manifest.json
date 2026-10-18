@@ -1,0 +1,81 @@
+{
+  "title": "Stage 21: Unweighted architecture trade-offs",
+  "created_at_utc": "2026-09-28T22:19:35.082684+00:00",
+  "run_manifest": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_manifest.json",
+  "run_manifest_sha256": "8fdfb063e37d70d5cddbfdb4986a240e4f0390032eb6abab9d7bab1c39d4cd25",
+  "inputs": {
+    "answer": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\answer_metrics_v2.csv",
+      "sha256": "d6c6df472f235beafc3e6736050bec78c009c2407d6f3371f2a0678d531f3893"
+    },
+    "retrieval": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\retrieval_metrics.csv",
+      "sha256": "68f41a530ab09254eb1625810b8eadb8d7d77d832e7dd6d0817a3c18f69e3b27"
+    },
+    "faithfulness": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\faithfulness_metrics.csv",
+      "sha256": "7e0722bd6c66f0378e133949f4c1ba46f54fc571348e4c5b767c5413f6832bc1"
+    },
+    "latency": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\latency_metrics.csv",
+      "sha256": "b4a6ce3175e56871d397c422a9b28e99dd275307cb70e444ecdec4f21d818c95"
+    },
+    "abstentions": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\statistics\\abstention_summary.csv",
+      "sha256": "2c90bcdfd33eecdc2bd8b7fc85399d488e3d68b1884099fa3bb888ccfb8c53e0"
+    }
+  },
+  "parameters": {
+    "objectives": [
+      {
+        "name": "answer_token_f1",
+        "quality_metric": "token_f1",
+        "eligible_architectures": [
+          "P0",
+          "P1",
+          "P2",
+          "P3"
+        ]
+      },
+      {
+        "name": "context_faithfulness",
+        "quality_metric": "context_faithfulness",
+        "eligible_architectures": [
+          "P1",
+          "P2",
+          "P3"
+        ]
+      },
+      {
+        "name": "recall_at_5",
+        "quality_metric": "recall_at_5",
+        "eligible_architectures": [
+          "P1",
+          "P2",
+          "P3"
+        ]
+      },
+      {
+        "name": "gold_evidence_support",
+        "quality_metric": "gold_evidence_support",
+        "eligible_architectures": [
+          "P0",
+          "P1",
+          "P2",
+          "P3"
+        ]
+      }
+    ],
+    "pareto_rule": "Maximize macro mean quality, minimize mean total latency; at least one strict improvement",
+    "weights": "none",
+    "support_scores": "Conditional on scored factual units; NA abstentions not imputed as zero",
+    "coverage": "Scored denominator and exact-abstention rate shown alongside support frontiers",
+    "paired_differences": "B minus A on shared non-NA question IDs; descriptive, no additional significance tests",
+    "latency_scope": "Recorded per-question total; includes model/API/network variability"
+  },
+  "outputs": {
+    "summary": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\aggregated\\tradeoff_summary.csv",
+    "frontiers": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\aggregated\\pareto_frontiers.csv",
+    "paired_tradeoffs": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\aggregated\\paired_tradeoffs.csv"
+  }
+}

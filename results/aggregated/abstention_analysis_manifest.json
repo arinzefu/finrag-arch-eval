@@ -1,0 +1,135 @@
+{
+  "title": "Post-hoc descriptive abstention overlap and evidence diagnostics",
+  "created_at_utc": "2026-10-17T22:50:07.619948+00:00",
+  "run_id": "financebench-heldout-v1",
+  "run_manifest": {
+    "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_manifest.json",
+    "sha256": "8fdfb063e37d70d5cddbfdb4986a240e4f0390032eb6abab9d7bab1c39d4cd25"
+  },
+  "inputs": {
+    "analysis_source": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\scripts\\analyze_abstentions.py",
+      "sha256": "464b528b3a96921f0ba818fc132bb737937a155436a80a986682ff459c454991"
+    },
+    "question_source": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\data\\splits\\common_evaluation.jsonl",
+      "sha256": "7a597f649ee697cabc27744b0989b36b51610a8fb7675f68b93bc19a7b73d666"
+    },
+    "faithfulness": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\faithfulness_metrics.csv",
+      "sha256": "7e0722bd6c66f0378e133949f4c1ba46f54fc571348e4c5b767c5413f6832bc1"
+    },
+    "faithfulness_summary": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\aggregated\\faithfulness_summary.csv",
+      "sha256": "233abe550dcb787c4ecc746237315be8a7a2ed73eaff4b9e0a93094a5cba668b"
+    },
+    "faithfulness_protocol": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\faithfulness_evaluation_manifest.json",
+      "sha256": "dc8775bb1e33d7ba21d4697347c215042826c79cf81d8d8a97dca959fecc1bc3"
+    },
+    "retrieval": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\retrieval_metrics.csv",
+      "sha256": "68f41a530ab09254eb1625810b8eadb8d7d77d832e7dd6d0817a3c18f69e3b27"
+    },
+    "evidence_mapping": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\data\\processed\\evidence_mapping.json",
+      "sha256": "d8c3ee8155f047d865cc9e572a71ef949821e824c7b193e046b84b42e5eae15f"
+    },
+    "raw_P0": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_P0.jsonl",
+      "sha256": "35e69e5d0d5bb039c3ee91fa36eab874ab5799d8aad68a2a6b0d34ed255c9942"
+    },
+    "raw_P1": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_P1.jsonl",
+      "sha256": "fb15c3d6321f9fb3f534e23fee1a94f68ca36e4fd3802f054d87f8405610e676"
+    },
+    "raw_P2": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_P2.jsonl",
+      "sha256": "b117ba61634367f2e13b12043c8b5412c1250925829a1818c72c1f19c34be3b7"
+    },
+    "raw_P3": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_P3.jsonl",
+      "sha256": "bc37c4f40483786196c9f2b5c802eabbabad594f7ff9d2555ac72bfda85341e2"
+    }
+  },
+  "outputs": {
+    "overlap": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\aggregated\\abstention_overlap.csv",
+      "sha256": "f5e0204e5439420b81f998a6df75207f693c67f7bc679032dad97a3fc6eba88d"
+    },
+    "pairwise": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\aggregated\\abstention_pairwise.csv",
+      "sha256": "7dfd99c65c4b11081a933c08bafa8ff7339c81c629f70656a1d1e1f39d9eeff8"
+    },
+    "evidence_coverage": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\aggregated\\abstention_evidence_coverage.csv",
+      "sha256": "a9a8d72e1ba6badafebac460d54d915051ce047bf2e1e8960890b5ff69c463ea"
+    },
+    "question_details": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\aggregated\\abstention_question_details.csv",
+      "sha256": "bfc17628a6b673f0cbf3a428b86cd1b9b746b36415b4d9aaa222df59e31d9871"
+    },
+    "question_patterns": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\aggregated\\abstention_question_patterns.csv",
+      "sha256": "9dcfd58a285a1eae16a0d813c2c2a6277f5c9015ab8806703cd3f65495b7b9af"
+    },
+    "support_summary": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\aggregated\\abstention_support_summary.csv",
+      "sha256": "6e376b1ee1be30d06269ca1167c12dd9b90acd63c36ac9528887f4babe73b272"
+    },
+    "categories": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\aggregated\\abstention_category_summary.csv",
+      "sha256": "8f362b6eef128c2776cf2941c553ea20b46778f01f48def66ba8f276248ccfe3"
+    }
+  },
+  "parameters": {
+    "question_count": 145,
+    "architectures": [
+      "P0",
+      "P1",
+      "P2",
+      "P3"
+    ],
+    "overlap_architectures": [
+      "P1",
+      "P2",
+      "P3"
+    ],
+    "exact_abstention_phrases": [
+      "cannot determine from the provided information",
+      "i do not know",
+      "i don't know",
+      "insufficient evidence",
+      "insufficient evidence in the retrieved context"
+    ],
+    "normalization": "strip whitespace, lowercase, strip trailing periods; frozen Stage 17 policy",
+    "frozen_retrieval_settings": {
+      "p1_dense_k": 5,
+      "p2_dense_k": 10,
+      "p2_sparse_k": 10,
+      "p2_fusion_k": 5,
+      "p3_dense_k": 20,
+      "p3_sparse_k": 20,
+      "p3_fusion_k": 20,
+      "final_context_k": 5,
+      "rrf_k": 60,
+      "reranker_max_length": 512,
+      "reranker_window_overlap": 64,
+      "reranker_batch_size": 32
+    },
+    "support_table_caption": "Model-judged factual-unit support and hallucination proxies. Context refers to the final retrieved chunks; gold refers to annotated FinanceBench evidence. Scored-answer counts are reported separately for each evidence source.",
+    "support_aggregation": "question-level macro mean over answers with at least one scored factual unit; same applicable set for each support/proxy pair",
+    "hallucination_proxy": "1 - support; unsupported factual units, not independently verified false answers",
+    "coverage_denominator": "question_count within architecture and exact_abstention group; question_rate uses the full frozen question set",
+    "missing_native_reasoning": "explicit unannotated category; no inferred labels"
+  },
+  "interpretation": [
+    "Diagnostic categories are observational and do not identify causal reasons for abstention.",
+    "A gold-page hit does not prove that the selected chunk contains sufficient answer-bearing evidence; a miss does not rule out alternative valid evidence.",
+    "No exact abstention does not guarantee a substantive or correct answer; partial refusals and nonfactual responses may remain.",
+    "Observed candidate pools have different budgets: P1 dense top5; P2 dense10/sparse10, RRF top5; P3 dense20/sparse20, RRF top20, reranked top5.",
+    "The three missing-page stage counts partition no_final_gold_page_hit; empty_retrieval overlaps those counts and must not be added again.",
+    "Support/proxy pairs sum to one by definition. Context and gold refer to different evidence and must not be added together.",
+    "Conditional support means exclude exact abstentions and other answers without scored factual units; different architectures/sources can have different applicable sets."
+  ]
+}

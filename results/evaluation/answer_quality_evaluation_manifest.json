@@ -1,0 +1,138 @@
+{
+  "title": "Post-hoc whole-answer correctness, completeness and BERTScore",
+  "created_at_utc": "2026-10-17T23:56:29.881614+00:00",
+  "run_id": "financebench-heldout-v1",
+  "run_manifest": {
+    "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_manifest.json",
+    "sha256": "8fdfb063e37d70d5cddbfdb4986a240e4f0390032eb6abab9d7bab1c39d4cd25"
+  },
+  "inputs": {
+    "evidence": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\data\\processed\\evidence_mapping.json",
+      "sha256": "d8c3ee8155f047d865cc9e572a71ef949821e824c7b193e046b84b42e5eae15f"
+    },
+    "reference_rubrics": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\answer_reference_units_v3.jsonl",
+      "sha256": "28322cffdb5866cbc9f71b390e631b11f5df3b36983e50cea9294a9e0345ca7b"
+    },
+    "judgments": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\answer_quality_judgments_v3.jsonl",
+      "sha256": "b9e70d9da5dbb65d9d6766c4a66dcd675cc941d3698b885d147350adec6bb746"
+    },
+    "invalid_responses": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\answer_quality_invalid_responses_v3.jsonl",
+      "sha256": "79feb07f642583f250cf70ec4bc73f33301d1a206955af7d07d0c21845f88f91"
+    },
+    "bertscore": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\answer_bertscore_v1.json",
+      "sha256": "d593d0299f65a7b431d37a4bc9177b3a5ff85fd20c861525614fa92d01eaee70"
+    },
+    "semantic_source": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\scripts\\answer_semantics.py",
+      "sha256": "ccafbd0a0f75ad0e4897446896a73916b094c8fc3ee1799b1f2229b157c93ae6"
+    },
+    "bertscore_source": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\scripts\\answer_bertscore.py",
+      "sha256": "ca71fbedab5f119adeb737dbc9c7466cf1f3f71d45fd2698f72f665e21c25955"
+    },
+    "evaluator_source": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\scripts\\evaluate_answer_quality.py",
+      "sha256": "8967aa932a6dff785c906b7e361c1faebfd372833a9a4bdb2bd1e2467035748a"
+    },
+    "P0": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_P0.jsonl",
+      "sha256": "35e69e5d0d5bb039c3ee91fa36eab874ab5799d8aad68a2a6b0d34ed255c9942"
+    },
+    "P1": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_P1.jsonl",
+      "sha256": "fb15c3d6321f9fb3f534e23fee1a94f68ca36e4fd3802f054d87f8405610e676"
+    },
+    "P2": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_P2.jsonl",
+      "sha256": "b117ba61634367f2e13b12043c8b5412c1250925829a1818c72c1f19c34be3b7"
+    },
+    "P3": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_P3.jsonl",
+      "sha256": "bc37c4f40483786196c9f2b5c802eabbabad594f7ff9d2555ac72bfda85341e2"
+    },
+    "qualitative_audit": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\answer_quality_v3_audit.md",
+      "sha256": "fb53e8430cb32a4bbebec88db325fa4a822b2dd11b4e7a05cf9b0ee997c813af"
+    },
+    "qualitative_audit_cases": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\answer_quality_v3_audit.csv",
+      "sha256": "affd6c3f73399b7bddc3403e46f7e3f0dc35956df5505e6e58130cf84120d076"
+    }
+  },
+  "parameters": {
+    "evaluation_status": "post-hoc extension; saved generation outputs unchanged",
+    "judge_model": "gpt-4o-mini",
+    "judge_protocol": "reference-answer-correctness-completeness-v3",
+    "prompt_and_schema_sha256": "3f2f2958875b7b6c37c8d1804f34750970cb3dce9f536f41f232fa6c39c9ae0a",
+    "reference_rubric_policy": "one architecture-blind essential-unit rubric per question, shared across P0-P3",
+    "answer_correctness": "1 only for fully correct model-judged whole answer; other valid labels 0; judge_error missing; macro mean over valid judgments",
+    "answer_completeness": "model-judged correctly answered reference units / generated reference units; completeness proxy; macro mean over valid judgments",
+    "unresolved_judgments": "three validation failures yield judge_error and missing semantic scores; never imputed; scored counts reported; all-question correctness lower/upper bounds assign unresolved 0/1 respectively",
+    "abstention_policy": "frozen exact refusal detector retained separately from broader model-judged failure_to_answer",
+    "conditional_denominator": "valid scored non-exact-abstention responses, including noncanonical failures and partial answers; conditional BERTScore uses all non-exact-abstention responses; overall BERTScore covers every saved answer including exact refusals",
+    "judge_evidence": "question, reference answer, annotated evidence and shared rubric; architecture and actual retrieved context withheld",
+    "judge_validation": "strict schema, complete unit IDs, label/count consistency; up to three parse attempts; no independent human validation claimed",
+    "pilot_policy": "gpt-4o-mini v1/v2 pilots retained but not reused; user-selected v3 mini judge with shared generated units and consistency feedback; spot checks found optional-detail penalties, compatible paraphrase errors and rubric scope omissions; exploratory model judgments, not independently verified accuracy",
+    "legacy_policy": "original exact-match, token-F1 and numeric columns reproduced and checked unchanged",
+    "bertscore": {
+      "protocol": "reference-bertscore-v1",
+      "model_id": "bert-base-uncased",
+      "model_revision": "1dbc166cf8765166998eff31ade2eb64c8a40076",
+      "num_layers": 9,
+      "idf": false,
+      "rescale_with_baseline": false,
+      "all_layers": false,
+      "use_fast_tokenizer": false,
+      "language": "en",
+      "allow_truncation": false,
+      "max_input_tokens": 512,
+      "artifact_sha256": {
+        "config.json": "7160e1553ad2ca51d8c1cb066be533db31826e12d173824c1bb0cb1a4f187d20",
+        "model.safetensors": "68d45e234eb4a928074dfd868cead0219ab85354cc53d20e772753c6bb9169d3",
+        "tokenizer.json": "ce64fce797c24f68df90b40a3f74f579b336a493db14bd583fd520ea0d8c9a98",
+        "tokenizer_config.json": "53b6f42b8b8daddbdc6d3532c324187a92b46c1602bd6e8d4ad5a413b4fc90e1",
+        "vocab.txt": "07eced375cec144d27c900241f3e339478dec958f92fddbc551f295c992038a3"
+      },
+      "package_versions": {
+        "bert-score": "0.3.13",
+        "transformers": "4.57.6",
+        "torch": "2.14.1",
+        "tokenizers": "0.22.2",
+        "huggingface-hub": "0.36.2",
+        "numpy": "2.5.4"
+      },
+      "score_hash": "bbfa927311ce380d9b04641d178de77185d69bfabb83d26b57a56e23baa9398c",
+      "canonical_library_hash": "bert-base-uncased_L9_no-idf_version=0.3.12(hug_trans=4.57.6)",
+      "library_hash": "C:\\Users\\dell 5590 i7\\.cache\\huggingface\\hub\\models--bert-base-uncased\\snapshots\\1dbc166cf8765166998eff31ade2eb64c8a40076_L9_no-idf_version=0.3.12(hug_trans=4.57.6)",
+      "local_snapshot": "C:\\Users\\dell 5590 i7\\.cache\\huggingface\\hub\\models--bert-base-uncased\\snapshots\\1dbc166cf8765166998eff31ade2eb64c8a40076",
+      "device": "cpu",
+      "batch_size": 8,
+      "nthreads": 4,
+      "pair_count": 580,
+      "truncated_pair_count": 0,
+      "max_candidate_token_count": 304,
+      "max_reference_token_count": 132,
+      "input_pairs_sha256": "d243682d48e65a8a9ef04fa7fb3ce835d55856ab9739b8cfa4e804030d1f1114",
+      "interpretation": "Raw contextual-token similarity; not answer accuracy, factual correctness, completeness or a percentage of correct answers.",
+      "abstention_handling": "Score supplied refusal text against its reference normally",
+      "model_selection": "BERT base layer 9 is the official BERTScore layer selection; selected for CPU feasibility rather than the English default RoBERTa-large layer 17."
+    },
+    "previous_outputs_archive": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\archive\\before_answer_quality_20261017T235629759453Z",
+    "article_comparison": "different datasets, judges and metric definitions are not directly comparable"
+  },
+  "outputs": {
+    "per_question": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\answer_metrics_v2.csv",
+      "sha256": "ca38452906a466ce010e7c4af8f9a594ebd11d619fda2c5d8b2c6ff24db4f35e"
+    },
+    "summary": {
+      "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\aggregated\\answer_summary_v2.csv",
+      "sha256": "e0ab9acb85fd80db07bdd155cb4842239340a683f892455135f9970c70ec5c63"
+    }
+  }
+}

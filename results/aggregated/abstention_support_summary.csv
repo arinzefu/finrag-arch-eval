@@ -1,0 +1,5 @@
+run_id,architecture,question_count,exact_abstentions,exact_abstention_rate,non_abstentions,context_scored_n,context_unscored_non_abstentions,context_support,context_hallucination_proxy,gold_scored_n,gold_unscored_non_abstentions,gold_support,gold_hallucination_proxy,judge_model,judge_protocol
+financebench-heldout-v1,P0,145,0,0.0,145,0,,,,112,33,0.5828869047619047,0.41711309523809526,gpt-4o-mini,answer-unit-passage-v4
+financebench-heldout-v1,P1,145,58,0.4,87,85,2,0.8502707749766574,0.14972922502334268,83,4,0.6358481545228534,0.3641518454771467,gpt-4o-mini,answer-unit-passage-v4
+financebench-heldout-v1,P2,145,63,0.43448275862068964,82,80,2,0.8203409090909091,0.1796590909090909,81,1,0.6209876543209876,0.3790123456790123,gpt-4o-mini,answer-unit-passage-v4
+financebench-heldout-v1,P3,145,58,0.4,87,86,1,0.832281284606866,0.167718715393134,85,2,0.6524836601307189,0.34751633986928104,gpt-4o-mini,answer-unit-passage-v4

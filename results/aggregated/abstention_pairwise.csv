@@ -1,0 +1,4 @@
+run_id,architecture_a,architecture_b,question_count,both_abstained,a_only_abstained,b_only_abstained,neither_abstained,either_abstained,jaccard_abstentions,disagreement_rate
+financebench-heldout-v1,P1,P2,145,51,7,12,75,70,0.7285714285714285,0.1310344827586207
+financebench-heldout-v1,P1,P3,145,46,12,12,75,70,0.6571428571428571,0.16551724137931034
+financebench-heldout-v1,P2,P3,145,48,15,10,72,73,0.6575342465753424,0.1724137931034483

@@ -1,0 +1,7 @@
+run_id,architecture,exact_abstention,question_count,question_rate,final_gold_page_hit,no_final_gold_page_hit,empty_retrieval,gold_page_absent_candidate_union,gold_page_lost_before_pre_final,gold_page_lost_at_final_selection,final_gold_page_hit_rate
+financebench-heldout-v1,P1,0,87,0.6,49,38,0,38,0,0,0.5632183908045977
+financebench-heldout-v1,P1,1,58,0.4,9,49,2,49,0,0,0.15517241379310345
+financebench-heldout-v1,P2,0,82,0.5655172413793104,40,42,0,27,15,0,0.4878048780487805
+financebench-heldout-v1,P2,1,63,0.43448275862068964,6,57,2,40,17,0,0.09523809523809523
+financebench-heldout-v1,P3,0,87,0.6,48,39,0,10,16,13,0.5517241379310345
+financebench-heldout-v1,P3,1,58,0.4,10,48,2,29,7,12,0.1724137931034483

@@ -1,6 +1,6 @@
 {
   "title": "Stage 19: Native FinanceBench category performance",
-  "created_at_utc": "2026-09-28T22:02:49.552278+00:00",
+  "created_at_utc": "2026-10-17T23:57:21.139492+00:00",
   "run_manifest": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\raw_runs\\financebench-heldout-v1_manifest.json",
   "run_manifest_sha256": "8fdfb063e37d70d5cddbfdb4986a240e4f0390032eb6abab9d7bab1c39d4cd25",
   "inputs": {
@@ -10,7 +10,7 @@
     },
     "answer_metrics": {
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\answer_metrics_v2.csv",
-      "sha256": "d6c6df472f235beafc3e6736050bec78c009c2407d6f3371f2a0678d531f3893"
+      "sha256": "ca38452906a466ce010e7c4af8f9a594ebd11d619fda2c5d8b2c6ff24db4f35e"
     },
     "retrieval_metrics": {
       "path": "C:\\Users\\dell 5590 i7\\Documents\\GITHUB\\finrag-arch-eval\\results\\evaluation\\retrieval_metrics.csv",
@@ -36,6 +36,7 @@
     },
     "missing_reasoning_policy": "Exclude source-null reasoning labels from reasoning groups; retain those questions in question_type groups",
     "aggregation": "arithmetic mean over applicable observations; NA excluded, denominator saved per metric",
+    "answer_quality": "post-hoc model-judged whole-answer correctness and essential-reference-unit completeness; semantic means exclude judge_error rows, per-metric n and error counts saved; correctness bounds over all category questions treat every judge error as incorrect/correct respectively; BERTScore is similarity, not accuracy",
     "derived_labels": "none"
   },
   "outputs": {

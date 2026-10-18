@@ -29,6 +29,7 @@ from src.retrieval.reranker import DEFAULT_RERANKER_MODEL
 INPUTS = {
     "retrieval": ROOT / "results/aggregated/retrieval_summary.csv",
     "answers": ROOT / "results/aggregated/answer_summary_v2.csv",
+    "answer_quality_manifest": ROOT / "results/evaluation/answer_quality_evaluation_manifest.json",
     "faithfulness": ROOT / "results/aggregated/faithfulness_summary.csv",
     "latency": ROOT / "results/aggregated/latency_summary.csv",
     "categories": ROOT / "results/aggregated/question_type_summary.csv",
@@ -43,7 +44,7 @@ INPUTS = {
 FIGURE_TITLES = {
     "figure01_architecture_overview": "Figure 1. Frozen architecture overview",
     "figure02_recall_at_5": "Figure 2. Gold-page Recall@5",
-    "figure03_answer_correctness": "Figure 3. Held-out answer correctness",
+    "figure03_answer_correctness": "Figure 3. Model-judged correctness, coverage and answer similarity",
     "figure04_evidence_support": "Figure 4. Evidence support and scored-answer coverage",
     "figure05_total_latency": "Figure 5. Recorded total latency",
     "figure06_answer_quality_latency": "Figure 6. Answer quality versus latency",
@@ -67,12 +68,27 @@ TABLE1_FIELDS = ["table_title", "run_id", "architecture", "retrieval_design",
                  "prompt_policy"]
 TABLE2_FIELDS = ["table_title", "run_id", "architecture", "question_count",
                  "hit_at_5", "recall_at_5", "mrr_at_5", "exact_match", "token_f1",
+                 "answer_correctness", "answer_correctness_non_abstained",
+                 "answer_completeness", "answer_completeness_non_abstained",
+                 "semantic_scored_count", "non_abstained_count", "correct_count",
+                 "semantic_non_abstained_scored_count", "judge_error_count",
+                 "answer_correctness_lower_bound", "answer_correctness_upper_bound",
+                 "partially_correct_count", "incorrect_count", "failure_to_answer_count",
+                 "bertscore_precision", "bertscore_recall", "bertscore_f1",
+                 "bertscore_f1_non_abstained", "bertscore_scored_count",
                  "numeric_accuracy", "numeric_applicable_n", "context_faithfulness",
                  "context_hallucination", "context_scored_n", "gold_evidence_support",
                  "gold_evidence_hallucination", "gold_scored_n", "exact_abstention_count",
                  "exact_abstention_rate", "total_latency_mean_ms", "total_latency_median_ms",
                  "total_latency_std_ms"]
 TABLE3_FIELDS = ["table_title", "run_id", "grouping", "category", "architecture",
+                 "semantic_scored_count", "semantic_non_abstained_scored_count",
+                 "judge_error_count", "correct_count", "answer_correctness_lower_bound",
+                 "answer_correctness_upper_bound",
+                 "answer_correctness_mean", "answer_correctness_n",
+                 "answer_completeness_mean", "answer_completeness_n",
+                 "bertscore_f1_mean", "bertscore_f1_n", "exact_abstention_mean",
+                 "exact_abstention_n",
                  "question_count", "token_f1_mean", "token_f1_n", "numeric_accuracy_mean",
                  "numeric_accuracy_n", "recall_at_5_mean", "recall_at_5_n",
                  "context_faithfulness_mean", "context_faithfulness_n",
@@ -209,6 +225,15 @@ def build_tables(manifest: dict, data: dict) -> dict[str, tuple[list[dict], list
             "recall_at_5": retrieval.get("recall_at_5", ""),
             "mrr_at_5": retrieval.get("mrr_at_5", ""),
             "exact_match": answer["exact_match"], "token_f1": answer["token_f1"],
+            **{field: answer[field] for field in (
+                "answer_correctness", "answer_correctness_non_abstained",
+                "answer_completeness", "answer_completeness_non_abstained",
+                "semantic_scored_count", "non_abstained_count", "correct_count",
+                "semantic_non_abstained_scored_count", "judge_error_count",
+                "answer_correctness_lower_bound", "answer_correctness_upper_bound",
+                "partially_correct_count", "incorrect_count", "failure_to_answer_count",
+                "bertscore_precision", "bertscore_recall", "bertscore_f1",
+                "bertscore_f1_non_abstained", "bertscore_scored_count")},
             "numeric_accuracy": answer["numeric_accuracy"],
             "numeric_applicable_n": answer["numeric_applicable_count"],
             "context_faithfulness": faith["context_faithfulness"],
@@ -290,25 +315,43 @@ def plot_recall(data: dict):
 
 
 def plot_answers(data: dict):
-    fig, ax = plt.subplots(figsize=(9.2, 4.7))
+    fig, axes = plt.subplots(1, 3, figsize=(14.0, 4.8))
     positions = np.arange(len(ARCHITECTURES))
-    measures = (("Exact match", "exact_match", "#718096"),
-                ("Token F1", "token_f1", "#0072B2"),
-                ("Numeric accuracy", "numeric_accuracy", "#D55E00"))
-    width = .24
-    for index, (label, field, color) in enumerate(measures):
-        scores = [float(data["answers"][arch][field]) for arch in ARCHITECTURES]
-        bars = ax.bar(positions + (index - 1) * width, scores, width=width,
-                      label=label, color=color)
-        ax.bar_label(bars, labels=[f"{score:.3f}" for score in scores], padding=2, fontsize=8)
-    ax.set_xticks(positions, ARCHITECTURES)
-    ax.set_ylim(0, .25)
-    ax.set_ylabel("Mean score")
-    ax.set_title(FIGURE_TITLES["figure03_answer_correctness"], weight="bold")
-    ax.legend(frameon=False, ncol=3, loc="upper left")
-    ax.text(.5, -.16, "Numeric accuracy uses the corrected v2 extractor (112 applicable questions per architecture)",
-            transform=ax.transAxes, ha="center", fontsize=9, color="#4B5563")
-    fig.tight_layout(rect=(0, .06, 1, 1))
+    panels = (
+        ("GPT-4o-mini against annotated gold evidence", (("Correctness", "answer_correctness", "#0072B2"),
+                                         ("Coverage proxy", "answer_completeness", "#009E73"))),
+        ("Similarity to the gold answer", (("BERTScore F1", "bertscore_f1", "#8064A2"),
+                                   ("Token F1", "token_f1", "#0072B2"))),
+        ("Strict diagnostic scores", (("Exact match", "exact_match", "#718096"),
+                                       ("Numeric accuracy", "numeric_accuracy", "#D55E00"))),
+    )
+    width = .35
+    for ax, (title, measures) in zip(axes, panels):
+        for index, (label, field, color) in enumerate(measures):
+            values = [data["answers"][arch][field] for arch in ARCHITECTURES]
+            scores = [float(value) if value not in ("", None) else float("nan") for value in values]
+            bars = ax.bar(positions + (index - .5) * width, scores, width=width,
+                          label=label, color=color)
+            ax.bar_label(bars, labels=[f"{score:.2f}" if math.isfinite(score) else ""
+                                      for score in scores], padding=2, fontsize=8)
+            for bar_index, score in enumerate(scores):
+                if not math.isfinite(score):
+                    ax.text(bars[bar_index].get_x() + width / 2, .02, "NA", ha="center", fontsize=8)
+        labels = list(ARCHITECTURES)
+        if ax is axes[0]:
+            labels = [f"{arch}\nn={data['answers'][arch]['semantic_scored_count']}"
+                      if "semantic_scored_count" in data["answers"][arch] else arch
+                      for arch in ARCHITECTURES]
+        ax.set_xticks(positions, labels)
+        ax.set_ylim(0, 1.09)
+        ax.set_title(title, fontsize=11)
+        ax.legend(frameon=False, ncol=1, loc="upper left", fontsize=8)
+    axes[0].set_ylabel("Mean score (0–1)")
+    fig.suptitle(FIGURE_TITLES["figure03_answer_correctness"], weight="bold")
+    fig.text(.5, .02, "Semantic means exclude judge errors (valid n shown); all-question correctness bounds are in the tables.\n"
+             "BERTScore uses BERT-base and measures similarity; numeric scores use their own applicable n.",
+             ha="center", fontsize=9, color="#4B5563")
+    fig.tight_layout(rect=(0, .08, 1, .96))
     return fig
 
 
@@ -462,13 +505,13 @@ def render_to_staging(staging: Path, manifest: dict, data: dict,
     return staged
 
 
-def publish(manifest_path: Path, manifest: dict, staged: dict[str, Path]) -> None:
+def publish(manifest_path: Path, manifest: dict, staged: dict[str, Path], *,
+            overwrite: bool = False) -> None:
     destinations = output_paths()
+    if not overwrite:
+        refuse_existing(*destinations.values(), MANIFEST_OUTPUT)
     for destination in destinations.values():
         destination.parent.mkdir(parents=True, exist_ok=True)
-    for name, destination in destinations.items():
-        with staged[name].open("rb") as source, destination.open("xb") as target:
-            shutil.copyfileobj(source, target)
     payload = {
         "title": "Final figures and tables",
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -486,18 +529,29 @@ def publish(manifest_path: Path, manifest: dict, staged: dict[str, Path]) -> Non
             "pareto_policy": "unweighted point-estimate frontiers; no final architecture winner inferred",
             "latency_policy": "recorded per-question total; excludes pipeline/model initialization",
             "judge_caveat": "see results/evaluation/faithfulness_audit_report.md",
+            "answer_quality_policy": "post-hoc model-judged correctness and reference completeness; semantic means exclude judge_error scores and retain valid n; conditional non-abstention means use valid semantic rows only; all-question correctness bounds count every judge error as incorrect/correct respectively; BERTScore is similarity, not accuracy",
         },
         "outputs": {
             name: {"title": (FIGURE_TITLES[name.rsplit(".", 1)[0]]
                              if name.endswith((".png", ".pdf"))
                              else TABLE_TITLES[name.rsplit(".", 1)[0]]),
-                   "path": str(path.resolve()), "sha256": sha256(path)}
+                   "path": str(path.resolve()), "sha256": sha256(staged[name])}
             for name, path in destinations.items()
         },
     }
-    with MANIFEST_OUTPUT.open("x", encoding="utf-8") as handle:
+    staged_manifest = next(iter(staged.values())).parent / MANIFEST_OUTPUT.name
+    with staged_manifest.open("w", encoding="utf-8") as handle:
         json.dump(payload, handle, indent=2, ensure_ascii=False)
         handle.write("\n")
+    # All figures, tables and hashes exist before any published artifact changes.
+    # Replacing a file on the same filesystem is atomic; publish the manifest last.
+    for name, destination in destinations.items():
+        if overwrite:
+            staged[name].replace(destination)
+        else:
+            with staged[name].open("rb") as source, destination.open("xb") as target:
+                shutil.copyfileobj(source, target)
+    staged_manifest.replace(MANIFEST_OUTPUT)
 
 
 def main() -> None:
@@ -505,8 +559,10 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path, default=MANIFEST)
     parser.add_argument("--check-only", action="store_true",
                         help="validate inputs and show planned outputs without creating files")
+    parser.add_argument("--overwrite", action="store_true",
+                        help="replace current outputs only after complete validated staging")
     args = parser.parse_args()
-    if not args.check_only:
+    if not args.check_only and not args.overwrite:
         refuse_existing(*output_paths().values(), MANIFEST_OUTPUT)
     manifest, _ = load_run(args.manifest)
     data = load_inputs(manifest, args.manifest)
@@ -523,7 +579,7 @@ def main() -> None:
                          "axes.grid": False, "savefig.dpi": 220})
     with tempfile.TemporaryDirectory(prefix="stage22-", dir=ROOT / "results") as temporary:
         staged = render_to_staging(Path(temporary), manifest, data, tables)
-        publish(args.manifest, manifest, staged)
+        publish(args.manifest, manifest, staged, overwrite=args.overwrite)
     print(f"Saved {len(FIGURE_TITLES)} titled figures as PNG and PDF in {ROOT / 'results/figures'}")
     print(f"Saved {len(TABLE_TITLES)} titled CSV tables in {ROOT / 'results/tables'}")
     print(f"Provenance: {MANIFEST_OUTPUT}")

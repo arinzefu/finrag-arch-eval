@@ -9,6 +9,7 @@ From a notebook started in the repository root::
     report.show("retrieval")
     report.show("answers")
     report.show("faithfulness")
+    report.show("abstentions")
     report.show("latency")
     report.show("categories")
     report.show("statistics")
@@ -55,6 +56,15 @@ TABLE_PATHS = {
     "frontiers": "results/aggregated/pareto_frontiers.csv",
     "paired_tradeoffs": "results/aggregated/paired_tradeoffs.csv",
 }
+ABSTENTION_TABLE_PATHS = {
+    "overlap": "results/aggregated/abstention_overlap.csv",
+    "pairwise": "results/aggregated/abstention_pairwise.csv",
+    "evidence_coverage": "results/aggregated/abstention_evidence_coverage.csv",
+    "question_details": "results/aggregated/abstention_question_details.csv",
+    "question_patterns": "results/aggregated/abstention_question_patterns.csv",
+    "support_summary": "results/aggregated/abstention_support_summary.csv",
+    "categories": "results/aggregated/abstention_category_summary.csv",
+}
 QUESTION_METRICS = {
     "retrieval": "results/evaluation/retrieval_metrics.csv",
     "answers": "results/evaluation/answer_metrics_v2.csv",
@@ -62,7 +72,7 @@ QUESTION_METRICS = {
     "latency": "results/evaluation/latency_metrics.csv",
 }
 SECTION_ORDER = ("study", "architectures", "metrics", "overall", "retrieval", "answers",
-                 "faithfulness", "latency", "categories", "statistics", "tradeoffs",
+                 "faithfulness", "abstentions", "latency", "categories", "statistics", "tradeoffs",
                  "audit", "interpretation")
 
 
@@ -87,6 +97,8 @@ class FinanceBenchReport:
         self.corpus_freeze = _read_json(self.root / "configs/corpus_freeze.json")
         self.faithfulness_protocol = _read_json(
             self.root / "results/evaluation/faithfulness_evaluation_manifest.json")
+        quality_path = self.root / "results/evaluation/answer_quality_evaluation_manifest.json"
+        self.answer_quality_protocol = _read_json(quality_path) if quality_path.exists() else None
         self.statistics_protocol = _read_json(
             self.root / "results/statistics/hypothesis_tests_manifest.json")
         self.category_protocol = _read_json(
@@ -97,7 +109,15 @@ class FinanceBenchReport:
                        for name, path in TABLE_PATHS.items()}
         self._question_tables: dict[str, pd.DataFrame] = {}
         self._raw_runs: dict[str, dict[str, dict]] | None = None
+        self._abstention_tables: dict[str, pd.DataFrame] | None = None
+        self._verify_hashes = verify_hashes
         self._validate(verify_hashes)
+
+    @property
+    def has_answer_quality(self) -> bool:
+        """Whether post-hoc semantic and BERTScore results have been published."""
+        return {"answer_correctness", "answer_completeness", "bertscore_f1",
+                "semantic_scored_count", "bertscore_scored_count"}.issubset(self.tables["answers"])
 
     def _validate(self, verify_hashes: bool) -> None:
         run_id = self.run_manifest["run_id"]
@@ -126,12 +146,15 @@ class FinanceBenchReport:
         expected_tests = len(self.statistics_protocol["parameters"]["comparisons"])
         if len(self.tables["tests"]) != expected_tests:
             raise ValueError("Paired test count differs from Stage 20 provenance")
+        self._validate_answer_quality(verify_hashes)
         if verify_hashes:
             source = self.root / "results/raw_runs/financebench-heldout-v1_manifest.json"
             if sha256(source) != self.final_manifest["run_manifest"]["sha256"]:
                 raise ValueError("Frozen run manifest hash has changed")
             for name in ("retrieval", "answers", "faithfulness", "latency", "categories",
-                         "statistics", "tradeoffs", "frontiers"):
+                         "statistics", "tradeoffs", "frontiers",
+                         *(name for name in ("answer_quality_manifest",)
+                           if name in self.final_manifest["inputs"])):
                 record = self.final_manifest["inputs"][name]
                 path = Path(record["path"])
                 if not path.exists() or sha256(path) != record["sha256"]:
@@ -141,6 +164,39 @@ class FinanceBenchReport:
                 path = self.root / "results" / folder / name
                 if not path.exists() or sha256(path) != record["sha256"]:
                     raise ValueError(f"Final output missing or modified: {path}")
+
+    def _validate_answer_quality(self, verify_hashes: bool) -> None:
+        """Follow the quality manifest through its frozen run, journals and outputs."""
+        protocol = self.answer_quality_protocol
+        if protocol is None:
+            if self.has_answer_quality:
+                raise ValueError("Semantic answer metrics are missing their quality manifest")
+            return
+        if protocol.get("run_id") != self.run_manifest["run_id"]:
+            raise ValueError("Answer-quality evaluation belongs to a different frozen run")
+        run_record = protocol["run_manifest"]
+        run_path = self.root / "results/raw_runs/financebench-heldout-v1_manifest.json"
+        if Path(run_record["path"]).resolve() != run_path.resolve():
+            raise ValueError("Answer-quality evaluation references a different run manifest")
+        required_inputs = {"evidence", "reference_rubrics", "judgments", "bertscore",
+                           "semantic_source", "bertscore_source", "evaluator_source", *ARCHITECTURES}
+        if not required_inputs.issubset(protocol["inputs"]):
+            raise ValueError("Answer-quality provenance omits required input journals or sources")
+        outputs = protocol["outputs"]
+        for name, relative in (("per_question", QUESTION_METRICS["answers"]),
+                               ("summary", TABLE_PATHS["answers"])):
+            if name not in outputs or Path(outputs[name]["path"]).resolve() != (self.root / relative).resolve():
+                raise ValueError(f"Answer-quality provenance references a different {name} output")
+        if self.has_answer_quality and "answer_quality_manifest" not in self.final_manifest["inputs"]:
+            raise ValueError("Published semantic answer metrics lack quality-manifest provenance")
+        if verify_hashes:
+            if not run_path.exists() or sha256(run_path) != run_record["sha256"]:
+                raise ValueError("Answer-quality frozen-run manifest hash has changed")
+            for kind in ("inputs", "outputs"):
+                for name, record in protocol[kind].items():
+                    path = Path(record["path"])
+                    if not path.exists() or sha256(path) != record["sha256"]:
+                        raise ValueError(f"Answer-quality {kind} missing or modified: {name}")
 
     def dataframe(self, name: str) -> pd.DataFrame:
         """Return an independent copy of a saved result table by TABLE_PATHS key."""
@@ -232,15 +288,30 @@ class FinanceBenchReport:
                 ("Retrieval", "MRR@5"): proportion(result["mrr_at_5"]),
                 ("Answer", "Exact match"): proportion(result["exact_match"]),
                 ("Answer", "Token F1"): proportion(result["token_f1"]),
+                ("Answer", "Model-judged correctness"): proportion(result.get("answer_correctness")),
+                ("Answer", "Reference-unit coverage proxy"): proportion(result.get("answer_completeness")),
+                ("Answer", "Semantic scored n"): applicable_int(result.get("semantic_scored_count")),
+                ("Answer", "Judge errors"): applicable_int(answer.get("judge_error_count")),
+                ("Answer", "Correctness lower bound"):
+                    proportion(answer.get("answer_correctness_lower_bound")),
+                ("Answer", "Correctness upper bound"):
+                    proportion(answer.get("answer_correctness_upper_bound")),
+                ("Answer", "BERTScore F1 similarity"): proportion(result.get("bertscore_f1")),
+                ("Answer", "BERTScore n"): applicable_int(result.get("bertscore_scored_count")),
+                ("Answer", "Correctness, non-abstained"):
+                    proportion(result.get("answer_correctness_non_abstained")),
+                ("Answer", "Non-abstained n"): applicable_int(result.get("non_abstained_count")),
+                ("Answer", "Semantic non-abstained scored n"):
+                    applicable_int(answer.get("semantic_non_abstained_scored_count")),
                 ("Answer", "Numeric accuracy"): proportion(result["numeric_accuracy"]),
                 ("Answer", "Numeric precision"): proportion(answer["numeric_precision"]),
                 ("Answer", "Numeric F1"): proportion(answer["numeric_f1"]),
                 ("Answer", "Numeric n"): int(result["numeric_applicable_n"]),
                 ("Evidence", "Context support"): proportion(result["context_faithfulness"]),
-                ("Evidence", "Context hallucination"): proportion(result["context_hallucination"]),
+                ("Evidence", "Context hallucination proxy"): proportion(result["context_hallucination"]),
                 ("Evidence", "Context n"): int(result["context_scored_n"]),
                 ("Evidence", "Gold support"): proportion(result["gold_evidence_support"]),
-                ("Evidence", "Gold hallucination"): proportion(result["gold_evidence_hallucination"]),
+                ("Evidence", "Gold hallucination proxy"): proportion(result["gold_evidence_hallucination"]),
                 ("Evidence", "Gold n"): int(result["gold_scored_n"]),
                 ("Evidence", "Exact abstentions"): int(result["exact_abstention_count"]),
                 ("Latency", "Mean total (s)"): round(float(total) / 1000, 2),
@@ -260,11 +331,14 @@ class FinanceBenchReport:
             ("MRR@5", "P1-P3", "Reciprocal rank of the first annotated gold page in final top 5; otherwise 0."),
             ("Exact match", "P0-P3", "Normalized answer-string equality; strict surface metric."),
             ("Token F1", "P0-P3", "Bag-of-token overlap with the gold answer after fixed normalization."),
+            ("Whole-answer correctness", "P0-P3; valid semantic judgments", "Post-hoc model-judged binary fully-correct rate against the question, reference answer and annotated evidence. Exact abstentions score zero; unresolved judge errors have no score. Full-question lower/upper bounds retain their uncertainty. Not a human-verified accuracy rate."),
+            ("Reference-unit coverage (completeness proxy)", "P0-P3; valid semantic judgments", "Post-hoc model-judged fraction of generated reference units covered correctly, macro-averaged over scored questions. Minimal requested units were intended, but a convenience audit found optional supporting details included and compatible paraphrases rejected. Extra incorrect claims may lower correctness without lowering coverage."),
+            ("BERTScore P/R/F1", "P0-P3; all questions", "Contextual token-embedding similarity to the gold answer. Precision/recall are embedding matches, not factual precision/recall; F1 is similarity, not an accuracy percentage."),
             ("Numeric accuracy", "P0-P3; gold-numeric answers", "Matched gold numeric entities / gold numeric entities; corrected v2 extractor."),
             ("Numeric precision / F1", "P0-P3; applicable answers", "Precision penalizes extra generated numeric entities; F1 combines precision and recall."),
-            ("Context faithfulness", "P1-P3; scored answers", "Supported factual answer units / all factual units, against actual final retrieved chunks."),
-            ("Gold-evidence support", "P0-P3; scored answers", "Same unit measure against FinanceBench annotated evidence."),
-            ("Hallucination", "P0-P3 where support applies", "One minus the corresponding support score; not defined for an answer without factual units."),
+            ("Context support", "P1-P3; scored answers", "Model-judged supported factual units / scored factual units against final retrieved chunks; macro mean across applicable answers."),
+            ("Gold-evidence support", "P0-P3; scored answers", "Same model-judged unit measure against FinanceBench annotated evidence; applicability can differ from context."),
+            ("Hallucination proxy", "P0-P3 where support applies", "One minus corresponding support over the same scored answers; unsupported units are not independently verified false answers."),
             ("Exact abstention", "P0-P3", "Exact refusal phrase count; shown separately, not scored as zero support."),
             ("Latency", "P0-P3", "Recorded per-question component/total time; excludes model and pipeline initialization."),
         ], columns=["Metric", "Applies to", "Definition"])
@@ -275,10 +349,76 @@ class FinanceBenchReport:
             "no_result_count", "hit_at_1", "hit_at_3", "hit_at_5", "recall_at_5", "mrr_at_5"])
 
     def answers(self) -> pd.DataFrame:
-        """Stage 16 v2 exact, token, and full numeric metric family."""
+        """Legacy lexical and numeric diagnostic scores, preserved unchanged."""
         return _compact(self.tables["answers"], ["architecture", "question_count",
             "numeric_applicable_count", "exact_match", "token_f1", "numeric_accuracy",
             "numeric_precision", "numeric_recall", "numeric_f1"])
+
+    def answer_quality(self) -> pd.DataFrame:
+        """Whole-answer semantic judgments and reference similarity with denominators."""
+        frame = self.tables["answers"]
+        columns = ["architecture", "question_count",
+            "answer_correctness", "answer_completeness", "semantic_scored_count",
+            "bertscore_precision", "bertscore_recall", "bertscore_f1", "bertscore_scored_count",
+            "exact_abstention_count", "non_abstained_count",
+            "answer_correctness_non_abstained", "answer_completeness_non_abstained",
+            "bertscore_f1_non_abstained"]
+        columns.extend(column for column in ("judge_error_count",
+            "answer_correctness_lower_bound", "answer_correctness_upper_bound",
+            "semantic_non_abstained_scored_count") if column in frame)
+        return _compact(frame, columns)
+
+    def answer_quality_labels(self) -> pd.DataFrame:
+        """Mutually exclusive model-judged outcomes; exact refusal is a separate flag."""
+        frame = self.tables["answers"]
+        columns = ["architecture", "question_count", "correct_count",
+            "partially_correct_count", "incorrect_count", "failure_to_answer_count",
+            "exact_abstention_count"]
+        if "judge_error_count" in frame:
+            columns.append("judge_error_count")
+        return _compact(frame, columns)
+
+    def answer_quality_scoring_note(self) -> str:
+        """Make unresolved judgments and semantic denominators explicit."""
+        frame = self.tables["answers"]
+        if "judge_error_count" not in frame or not frame["judge_error_count"].fillna(0).sum():
+            return ("Semantic means use valid judgments, including zero-valued exact abstentions. "
+                    "The scored n is shown for every architecture.")
+        counts = ", ".join(f"{row.architecture}: {int(row.judge_error_count)}"
+                           for row in frame.itertuples())
+        return ("**Partial semantic scoring:** unresolved judge errors were " + counts + ". "
+                "These responses have no correctness or coverage score and are excluded from "
+                "semantic means; they are not imputed as incorrect. Exact abstentions remain "
+                "valid zero scores. The full-question correctness lower bound is correct/n; "
+                "the upper bound is (correct + judge errors)/n. These bounds cover unresolved "
+                "judgments, not undetected judge mistakes. Conditional semantic means also "
+                "exclude judge errors and have their own valid non-abstained n.")
+
+    def common_answer_quality(self) -> pd.DataFrame:
+        """Compare all architectures on IDs where P1-P3 did not exact-abstain."""
+        self._load_question_data()
+        frame = self._question_tables["answers"].reset_index()
+        rag = frame.loc[frame["architecture"].isin(ARCHITECTURES[1:])]
+        grouped = rag.groupby("question_id")["exact_abstention"]
+        shared_ids = grouped.sum().loc[lambda values: values == 0].index
+        selected = frame.loc[frame["question_id"].isin(shared_ids)]
+        metrics = ["answer_correctness", "answer_completeness", "bertscore_f1", "token_f1"]
+        rows = []
+        for arch in ARCHITECTURES:
+            members = selected.loc[selected["architecture"] == arch]
+            row = {"architecture": arch, "common_question_count": len(members)}
+            for metric in metrics:
+                row[metric] = members[metric].mean()
+                row[f"{metric}_n"] = int(members[metric].notna().sum())
+            missing = int(members["answer_correctness"].isna().sum())
+            row["judge_error_count"] = missing
+            row["answer_correctness_lower_bound"] = (
+                members["answer_correctness"].sum() / len(members) if len(members) else pd.NA)
+            row["answer_correctness_upper_bound"] = (
+                (members["answer_correctness"].sum() + missing) / len(members)
+                if len(members) else pd.NA)
+            rows.append(row)
+        return pd.DataFrame(rows)
 
     def faithfulness(self) -> pd.DataFrame:
         """Stage 17 support/hallucination with exact-abstention and coverage counts."""
@@ -287,6 +427,135 @@ class FinanceBenchReport:
             "context_hallucination", "gold_applicable_count", "gold_evidence_support",
             "gold_evidence_hallucination", "judge_model", "judge_protocol",
             "context_guard_override_count", "gold_guard_override_count"])
+
+    def support_results(self) -> pd.DataFrame:
+        """Model-judged support and complementary proxies with scored-answer counts."""
+        frame = self.tables["faithfulness"]
+
+        def score_with_n(score: Any, count: Any) -> str:
+            return f"{score:.3f} ({int(count)})" if pd.notna(score) else "NA"
+
+        return pd.DataFrame([
+            {"ID": row["architecture"], "Abstentions": int(row["abstention_count"]),
+             "Context support (scored n)": score_with_n(
+                 row["context_faithfulness"], row["context_applicable_count"]),
+             "Context hallucination proxy": row["context_hallucination"],
+             "Gold support (scored n)": score_with_n(
+                 row["gold_evidence_support"], row["gold_applicable_count"]),
+             "Gold hallucination proxy": row["gold_evidence_hallucination"]}
+            for row in frame.to_dict("records")
+        ])
+
+    def _load_abstention_data(self) -> None:
+        """Read the separately versioned diagnostic exports without regenerating them."""
+        if self._abstention_tables is not None:
+            return
+        manifest_path = self.root / "results/aggregated/abstention_analysis_manifest.json"
+        if not manifest_path.exists():
+            raise FileNotFoundError(
+                "Saved abstention analysis is missing. Run "
+                "`python scripts/analyze_abstentions.py` once before reading this section."
+            )
+        manifest = _read_json(manifest_path)
+        run_id = self.run_manifest["run_id"]
+        if manifest["run_id"] != run_id:
+            raise ValueError("Abstention analysis belongs to another frozen run")
+        if self._verify_hashes:
+            for record in [manifest["run_manifest"], *manifest["inputs"].values(),
+                           *manifest["outputs"].values()]:
+                path = Path(record["path"])
+                if not path.is_absolute():
+                    path = self.root / path
+                if not path.exists() or sha256(path) != record["sha256"]:
+                    raise ValueError(f"Abstention analysis input/output missing or modified: {path}")
+        tables = {name: pd.read_csv(self.root / path,
+                  dtype={"pattern_p1_p2_p3": "string"}
+                  if name in ("overlap", "question_patterns") else None)
+                  for name, path in ABSTENTION_TABLE_PATHS.items()}
+        for name, frame in tables.items():
+            if frame.empty or not frame["run_id"].eq(run_id).all():
+                raise ValueError(f"Abstention {name} is empty or belongs to another run")
+        question_n = self.run_manifest["question_count"]
+        if (len(tables["overlap"]) != 8
+                or tables["overlap"]["question_count"].sum() != question_n):
+            raise ValueError("Abstention overlap must partition the frozen question set")
+        support = tables["support_summary"]
+        if len(support) != 4 or set(support["architecture"]) != set(ARCHITECTURES):
+            raise ValueError("Abstention support summary must cover P0-P3 exactly once")
+        if not support["question_count"].eq(question_n).all():
+            raise ValueError("Abstention support denominators differ from frozen question count")
+        self._abstention_tables = tables
+
+    def abstentions(self, name: str = "support_summary") -> pd.DataFrame:
+        """Copy one saved abstention table, including full question-level CSV exports."""
+        if name not in ABSTENTION_TABLE_PATHS:
+            raise KeyError(f"Unknown abstention table {name!r}; available: "
+                           f"{', '.join(ABSTENTION_TABLE_PATHS)}")
+        self._load_abstention_data()
+        assert self._abstention_tables is not None
+        return self._abstention_tables[name].drop(columns=["run_id"]).copy()
+
+    def abstention_interpretation(self) -> str:
+        """Describe observed refusal overlap and evidence coverage without causal claims."""
+        overlap = self.abstentions("overlap")
+        all_abstained = overlap.loc[
+            overlap[["p1_abstained", "p2_abstained", "p3_abstained"]].eq(1).all(axis=1),
+            "question_count"].sum()
+        none_abstained = overlap.loc[
+            overlap[["p1_abstained", "p2_abstained", "p3_abstained"]].eq(0).all(axis=1),
+            "question_count"].sum()
+        question_n = self.run_manifest["question_count"]
+        mixed = question_n - all_abstained - none_abstained
+        summary = self.abstentions("support_summary").set_index("architecture")
+        counts = ", ".join(
+            f"{arch}: {int(summary.loc[arch, 'exact_abstentions'])}/{question_n}"
+            for arch in ARCHITECTURES)
+        observations = []
+        evidence = self.abstentions("evidence_coverage")
+        for arch in ARCHITECTURES[1:]:
+            rows = evidence.loc[evidence["architecture"] == arch].set_index("exact_abstention")
+            abstained, answered = rows.loc[1], rows.loc[0]
+            observations.append(
+                f"{arch}: {int(abstained['final_gold_page_hit'])}/"
+                f"{int(abstained['question_count'])} exact abstentions retained an annotated "
+                f"gold page in the final context; {int(answered['no_final_gold_page_hit'])}/"
+                f"{int(answered['question_count'])} non-abstentions had no final gold-page hit."
+            )
+        return (
+            "## Abstention patterns and evidence diagnostics\n\n"
+            "P1-P3 were instructed to use only the supplied context and return "
+            "`Insufficient evidence in the retrieved context.` when the answer could "
+            "not be determined. The saved refusals do not record a more specific "
+            "explanation of that decision.\n\n"
+            "**Definition:** An exact abstention matches the frozen evaluator's complete "
+            "refusal phrase after its fixed normalization. Partial answers or answers "
+            "containing a caveat remain non-abstentions unless the whole answer matches. "
+            "Non-abstention therefore does not establish completeness or correctness.\n\n"
+            f"Exact abstentions were {counts}. Across P1-P3, **{int(all_abstained)}** "
+            f"questions were abstained by all three, **{int(none_abstained)}** by none, and "
+            f"**{int(mixed)}** had mixed decisions. Equal totals can mask different question "
+            "sets; the eight patterns are mutually exclusive and the pairwise table shows "
+            "both one-sided disagreements and shared decisions. P0 is the closed-book "
+            "baseline and has no retrieval evidence diagnostic.\n\n"
+            + "\n\n".join(observations)
+            + "\n\n**How to read the reasons:** The saved diagnostics locate observable "
+            "evidence-coverage conditions: an annotated gold page can be absent from the "
+            "candidate union, lost before pre-final selection, lost at final selection, "
+            "or retained in the final context. They describe associations with abstention, "
+            "not the model's internal reason for refusing. A page hit does not establish "
+            "that the retrieved chunk contains every fact needed for the answer; a miss "
+            "can still contain equivalent evidence outside the annotations. Empty retrieval "
+            "is shown separately and overlaps the no-final-hit group. Compare exact "
+            "abstentions with non-abstentions before attributing refusals to retrieval.\n\n"
+            "**Retrieval stages:** P1's observed candidate pool is dense top 5 and is "
+            "also its final context. P2 combines dense top 10 and BM25 top 10; its "
+            "pre-final RRF top 5 is the final context. P3 combines dense top 20 and "
+            "BM25 top 20, keeps RRF top 20, then selects the reranked top 5. A loss "
+            "before pre-final selection is therefore an RRF cutoff; a final-selection "
+            "loss in P3 is the reranked top-5 cutoff. Different candidate budgets mean "
+            "union misses cannot be compared as a controlled component effect. "
+            "A P1 pool miss refers only to its observed dense top 5."
+        )
 
     def latency(self) -> pd.DataFrame:
         """Stage 18 component and total timing; inapplicable components remain NA."""
@@ -305,6 +574,33 @@ class FinanceBenchReport:
                    "gold_evidence_support_n", "total_latency_ms_mean"]
         return _compact(frame.loc[frame["grouping"] == grouping], columns).reset_index(drop=True)
 
+    def category_answer_quality(self, grouping: str = "question_reasoning") -> pd.DataFrame:
+        """Native category semantic quality, similarity and support, each with its own n."""
+        if grouping not in ("question_type", "question_reasoning"):
+            raise ValueError("grouping must be 'question_type' or 'question_reasoning'")
+        frame = self.tables["category"].loc[self.tables["category"]["grouping"] == grouping]
+        measures = (
+            ("Model-judged correctness (n)", "answer_correctness"),
+            ("Reference-unit coverage proxy (n)", "answer_completeness"),
+            ("BERTScore F1 similarity (n)", "bertscore_f1"),
+            ("Context support (n)", "context_faithfulness"),
+            ("Gold support (n)", "gold_evidence_support"),
+        )
+        rows = []
+        for source in frame.to_dict("records"):
+            row = {key: source[key] for key in ("category", "architecture", "question_count")}
+            for label, metric in measures:
+                value, count = source[f"{metric}_mean"], source[f"{metric}_n"]
+                row[label] = f"{value:.3f} ({int(count)})" if pd.notna(value) else "NA"
+            row["Exact abstention rate"] = source["exact_abstention_mean"]
+            for column, label in (("judge_error_count", "Judge errors"),
+                    ("answer_correctness_lower_bound", "Correctness lower bound"),
+                    ("answer_correctness_upper_bound", "Correctness upper bound")):
+                if column in source:
+                    row[label] = source[column]
+            rows.append(row)
+        return pd.DataFrame(rows)
+
     def hypotheses(self) -> pd.DataFrame:
         """The substantive P0-P3 predictions, not statistical nulls."""
         return pd.DataFrame([
@@ -315,12 +611,13 @@ class FinanceBenchReport:
         ], columns=["Hypothesis", "Substantive prediction", "Primary contrast"])
 
     def hypothesis_tests(self, hypothesis: str | None = None) -> pd.DataFrame:
-        """All 21 fixed paired contrasts or those tagged with H0, H1, H2, H3."""
+        """All paired contrasts, optionally filtered by frozen H0-H3 or P0-P3 alias."""
         frame = self.tables["tests"]
         if hypothesis is not None:
-            if hypothesis not in ("P0", "P1", "P2", "P3"):
-                raise ValueError("hypothesis must be P0, P1, P2, or P3")
-            frame = frame.loc[frame["hypothesis"].str.split(",").map(lambda tags: hypothesis in tags)]
+            if hypothesis not in ("H0", "H1", "H2", "H3", "P0", "P1", "P2", "P3"):
+                raise ValueError("hypothesis must be H0-H3 or its P0-P3 alias")
+            frozen_tag = "H" + hypothesis[1]
+            frame = frame.loc[frame["hypothesis"].str.split(",").map(lambda tags: frozen_tag in tags)]
         return _compact(frame, ["hypothesis", "architecture_a", "architecture_b", "metric",
             "population", "test", "pair_count", "excluded_pair_count",
             "mean_difference_b_minus_a", "difference_ci95_low", "difference_ci95_high",
@@ -417,6 +714,10 @@ class FinanceBenchReport:
                 "final_pages": "; ".join(f"{chunk['doc_name']} p{chunk['page']}" for chunk in chunks),
                 "hit_at_5": retrieval["hit_at_5"] if retrieval is not None else pd.NA,
                 "token_f1": answers["token_f1"],
+                "answer_quality_label": answers.get("answer_quality_label", pd.NA),
+                "answer_correctness": answers.get("answer_correctness", pd.NA),
+                "answer_completeness": answers.get("answer_completeness", pd.NA),
+                "bertscore_f1": answers.get("bertscore_f1", pd.NA),
                 "numeric_accuracy": answers["numeric_accuracy"],
                 "context_faithfulness": faith["context_faithfulness"],
                 "gold_evidence_support": faith["gold_evidence_support"],
@@ -432,7 +733,19 @@ class FinanceBenchReport:
         question_n = self.run_manifest["question_count"]
         return (
             "## Interpretation safeguards\n\n"
-
+            "Whole-answer correctness and reference-unit coverage (a completeness proxy) are "
+            "post-hoc model judgments, not human-verified labels. A convenience audit found "
+            "optional supporting values included in reference units and compatible phrasing "
+            "rejected. P0's 'over 60 years' for 3M was rejected despite evidence of 65 years "
+            "(financebench_id_01858); its correct Adobe improvement conclusion was penalized "
+            "for omitted supporting percentages (financebench_id_00591). The audit is not a "
+            "representative sample or judge error-rate estimate, and no scores were manually "
+            "corrected. BERTScore is configuration-specific semantic similarity "
+            "and can reward shared language despite a wrong entity, period, polarity or number. "
+            "It is not a percentage of correct answers. Conditional response scores compare "
+            "different question subsets unless the same-question table is used. The original "
+            "paired tests retain their frozen metric family; the new semantic results are "
+            "descriptive and do not extend those prespecified significance claims."
         )
 
     def interpretation(self) -> str:
@@ -453,8 +766,25 @@ class FinanceBenchReport:
         recall_frontier = ", ".join(frontiers.loc[
             (frontiers["objective"] == "recall_at_5")
             & (frontiers["pareto_nondominated"] == 1), "architecture"])
+        semantic_reading = ""
+        if self.has_answer_quality:
+            summaries = self.tables["answers"].set_index("architecture")
+            semantic_reading = (
+                "- **Post-hoc semantic assessment:** Valid-judgment model-judged fully-correct "
+                "answer rates were " + ", ".join(
+                    f"{arch}: {summaries.loc[arch, 'answer_correctness']:.3f} "
+                    f"({int(summaries.loc[arch, 'correct_count'])}/"
+                    f"{int(summaries.loc[arch, 'semantic_scored_count'])})"
+                    for arch in ARCHITECTURES)
+                + ". The reference-unit coverage proxy, outcome-count and same-question tables "
+                "show what these binary rates omit. BERTScore is complementary similarity. "
+                "Missing judge scores and all-question correctness bounds are reported separately. "
+                "These post-hoc results are descriptive; the frozen paired tests below "
+                "remain tests of their original metrics.\n"
+            )
         return (
             "## Reading the results\n\n"
+            + semantic_reading +
             f"- **H0 (closed book):** P0's mean total latency was "
             f"{overall.loc['P0', 'total_latency_mean_ms']/1000:.2f} s, versus "
             f"{overall.loc['P1', 'total_latency_mean_ms']/1000:.2f} s for P1. "
@@ -542,23 +872,138 @@ class FinanceBenchReport:
             self.show_figure("2")
             return
         if section == "answers":
-            display(Markdown("## Answer correctness\n\nExact match and "
-                "token F1 are strict surface comparisons. Numeric values are normalized, "
-                "but the v2 correction prevents the company name `3M` from being read "
-                "as 3 million. Numeric scores have their own applicable denominator."))
+            if not self.has_answer_quality:
+                display(Markdown("## Answer diagnostics\n\nThe saved outputs currently contain "
+                    "lexical and numerical diagnostics. The post-hoc semantic-correctness, "
+                    "reference-completeness and BERTScore evaluation has not yet been published."))
+                table(self.answers())
+                self.show_figure("3")
+                return
+            display(Markdown("## Answer correctness, completeness and reference similarity\n\n"
+                "A post-hoc model judge compares each saved answer with the question, gold "
+                "answer and annotated gold evidence. Whole-answer correctness is the fraction "
+                "labelled fully correct; partial, incorrect and failure-to-answer outcomes count "
+                "as zero among valid judgments. Reference-unit coverage is a completeness proxy: "
+                "the fraction of generated reference units judged correctly covered, averaged "
+                "over scored questions. Minimal question-required units were intended, but a "
+                "convenience audit found optional supporting details in some rubrics and "
+                "compatible paraphrases rejected. Coverage can reach one when all reference "
+                "units are present even if added contradictory reasoning makes "
+                "the whole answer incorrect. These are automated model judgments without "
+                "independent human validation; they are not directly comparable to a "
+                "human-assessed benchmark accuracy rate. BERTScore uses contextual token embeddings to compare "
+                "the generated and reference answers; its P/R/F1 are similarity measures, not "
+                "factual precision, recall or percentages of correct answers.\n\n"
+                "The valid-judgment means include exact abstentions. Unresolved judge errors "
+                "have missing scores and are excluded, with full-question correctness bounds "
+                "shown separately. The conditional columns exclude "
+                "only exact refusals and use each pipeline's own response subset; a longer refusal "
+                "can still be a failure to answer. Scored denominators are shown explicitly."))
+            table(self.answer_quality())
+            display(Markdown(self.answer_quality_scoring_note()))
+            display(Markdown("**Observed judge limitations:** P0's 'over 60 years' was rejected "
+                "although the 3M evidence says 65 years (`financebench_id_01858`). Its correct "
+                "Adobe FCF-improvement conclusion was penalized for omitting supporting "
+                "percentages (`financebench_id_00591`). These convenience-audit examples do "
+                "not estimate error prevalence. Scores were not manually corrected; the "
+                "audit and source hashes are saved in `results/evaluation/answer_quality_v3_audit.md`."))
+            if self.answer_quality_protocol is not None:
+                protocol = self.answer_quality_protocol["parameters"]
+                bert = protocol["bertscore"]
+                display(Markdown(f"The saved post-hoc protocol uses `{protocol['judge_model']}` "
+                    f"and `{protocol['judge_protocol']}` for semantic judgments. Each question "
+                    "has one architecture-blind reference-unit rubric shared by P0-P3. "
+                    "The semantic scores remain automated judgments and have not been "
+                    "independently validated by human annotators. "
+                    f"BERTScore uses `{bert['model_id']}`, revision `{bert['model_revision']}`, "
+                    f"layer {bert['num_layers']}, IDF weighting `{bert['idf']}` and baseline "
+                    f"rescaling `{bert['rescale_with_baseline']}`. Results depend on this "
+                    "configuration and should not be directly compared with different article "
+                    "datasets or judge rubrics."))
+            display(Markdown("### Model-judged outcome counts\n\nThe four substantive outcome "
+                "counts plus unresolved judge errors partition each architecture's questions. "
+                "A judge error is an evaluation failure, not an answer outcome. Failure to answer is broader "
+                "than the frozen whole-response exact-abstention detector."))
+            table(self.answer_quality_labels())
+            display(Markdown("### Same-question comparison\n\nThe following compares all "
+                "four architectures on the same question IDs where P1, P2 and P3 did not "
+                "exact-abstain. It is selected by response behaviour and does not represent "
+                "the entire benchmark. Missing judge scores are excluded metric by metric; "
+                "the valid scored n may therefore differ even within this shared question set."))
+            table(self.common_answer_quality())
+            display(Markdown("### Lexical and numerical diagnostics\n\nExact match and "
+                "token F1 measure surface overlap. Numeric values use the corrected v2 "
+                "extractor, with a separate applicable denominator. These original scores are "
+                "retained alongside the new semantic assessment."))
             table(self.answers())
             self.show_figure("3")
             return
         if section == "faithfulness":
             protocol = self.faithfulness_protocol["parameters"]
-            display(Markdown("## Evidence support and hallucination\n\n"
+            display(Markdown("## Model-judged factual-unit support and hallucination proxies\n\n"
                 f"One fixed `{protocol['judge_model']}` judge and `{protocol['judge_protocol']}` "
                 "rubric evaluated P0-P3. Context support uses the final retrieved chunks "
                 "(P1-P3); gold support uses FinanceBench annotated evidence (P0-P3). "
-                "Hallucination is one minus support for scored answers. Exact abstentions "
-                "and answers with no scored factual units are not assigned zero support."))
-            table(self.faithfulness())
+                "For each answer with at least one judge-scored factual unit, support is the "
+                "proportion of those units judged supported. Each reported support score is "
+                "a question-level macro mean over applicable answers. The hallucination "
+                "proxy is the proportion judged unsupported: **1 − support**. Each "
+                "support–proxy pair therefore sums to one by definition; for example, "
+                "0.850 + 0.150 = 1. These are two views of the same judgments. Unsupported "
+                "units are not independently verified false answers.\n\n"
+                "**Table caption:** Model-judged factual-unit support and hallucination "
+                "proxies. Context refers to the final retrieved chunks; gold refers to "
+                "annotated FinanceBench evidence. Parentheses give the number of scored answers."))
+            table(self.support_results())
+            display(Markdown("The applicable sets differ across architectures and evidence "
+                "sources; compare the scored denominators and abstention counts alongside "
+                "these conditional means. Context and gold scores should not be added. "
+                "Exact abstentions and other answers without scored factual units are "
+                "excluded from the corresponding mean. P0 has no context score because "
+                "it received no retrieved chunks. The saved figure below uses the original "
+                "evaluation column labels; its hallucination series are the same proxies."))
             self.show_figure("4")
+            return
+        if section == "abstentions":
+            display(Markdown(self.abstention_interpretation()))
+            display(Markdown("### Abstention and scored-answer coverage\n\n"
+                "Scored n counts answers with at least one factual unit scored against "
+                "that evidence source. Other non-abstentions can still be unscored; "
+                "subtracting exact refusals alone does not recover a support denominator."))
+            table(_compact(self.abstentions(), ["architecture", "question_count",
+                "exact_abstentions", "exact_abstention_rate", "non_abstentions",
+                "context_scored_n", "context_unscored_non_abstentions",
+                "gold_scored_n", "gold_unscored_non_abstentions"]))
+            display(Markdown("### Joint P1-P3 decisions\n\n"
+                "Pattern bits are ordered P1, P2, P3: 1 means exact abstention and "
+                "0 means non-abstention. The eight rows partition all questions."))
+            table(self.abstentions("overlap").drop(columns=["question_ids_json"]))
+            display(Markdown("### Pairwise overlap and disagreement\n\n"
+                "Jaccard overlap is both abstained / either abstained. Each pair's both, "
+                "A-only, B-only, and neither counts sum to the frozen question count."))
+            table(self.abstentions("pairwise"))
+            questions = self.abstentions("question_patterns")
+            mixed = questions.loc[~questions["pattern_p1_p2_p3"].isin(["000", "111"])]
+            display(Markdown("### Questions with different decisions\n\n"
+                "One example per observed mixed pattern is shown below. The full saved "
+                "question-pattern table includes every question and all four generated answers."))
+            table(_compact(mixed.groupby("pattern_p1_p2_p3", sort=True).head(1),
+                ["question_id", "question", "pattern_p1_p2_p3",
+                 "p1_abstained", "p2_abstained", "p3_abstained"]))
+            display(Markdown("### Evidence conditions for both decision groups\n\n"
+                "The three loss-location columns partition no-final-gold-page hits. "
+                "They are page-level observations, not verified explanations of model intent."))
+            table(self.abstentions("evidence_coverage"))
+            display(Markdown("### Native question categories\n\n"
+                "Rates use each architecture/category's full question count. Missing native "
+                "labels are retained as a separate category, and categories are descriptive."))
+            table(self.abstentions("categories"))
+            display(Markdown("All question IDs, P0-P3 answers, refusal flags, and diagnostic "
+                "conditions are saved in `abstention_question_details.csv` and "
+                "`abstention_question_patterns.csv`. Inspect them with "
+                "`report.abstentions('question_details')` or "
+                "`report.abstentions('question_patterns')`; filter the saved rows to compare "
+                "the exact questions on which decisions differed."))
             return
         if section == "latency":
             display(Markdown("## Recorded latency\n\nComponent, mean, "
@@ -576,8 +1021,19 @@ class FinanceBenchReport:
                 "The remaining reasoning labels are source-null and excluded only from "
                 "reasoning groups. No outcome-informed derived labels were created."))
             display(Markdown("### Question type"))
+            if self.has_answer_quality and "answer_correctness_mean" in self.tables["category"]:
+                table(self.category_answer_quality("question_type"))
+                display(Markdown("Correctness/reference-unit coverage proxy/BERTScore means "
+                    "use each native category's valid scored answers; unresolved judge scores "
+                    "are excluded. Evidence support is conditional on scored factual "
+                    "units; parentheses show each metric's own n. These metrics are not summed. "
+                    "Only the benchmark's existing category labels are used."))
+            display(Markdown("### Question-type lexical, numeric and retrieval diagnostics"))
             table(self.categories("question_type"))
             display(Markdown("### Question reasoning"))
+            if self.has_answer_quality and "answer_correctness_mean" in self.tables["category"]:
+                table(self.category_answer_quality("question_reasoning"))
+            display(Markdown("### Reasoning-category lexical, numeric and retrieval diagnostics"))
             table(self.categories("question_reasoning"))
             self.show_figure("7")
             return
@@ -587,7 +1043,10 @@ class FinanceBenchReport:
                 "nulls. Every contrast pairs the same question IDs. McNemar exact handles "
                 "binary outcomes; Wilcoxon signed-rank handles scores; mean differences "
                 "have seeded paired-bootstrap 95% intervals. Holm adjustment spans all "
-                "21 comparisons. Scored-answer tests use complete pairs only."))
+                "21 original comparisons. Scored-answer tests use complete pairs only. "
+                "The added post-hoc correctness, completeness and BERTScore results are "
+                "descriptive; they have not been inserted into the original prespecified "
+                "test family."))
             table(self.hypotheses())
             table(self.hypothesis_tests())
             return
